@@ -1,0 +1,57 @@
+{% extends "base/base.html" %}
+{% load currency %}
+
+{% block content %}
+
+<div class="card">
+    <h2>لوحة الوكيل</h2>
+
+    <p><strong>رصيدك الحالي:</strong> {{ balance|iq_currency }}</p>
+    <p><strong>عدد العمليات:</strong> {{ total_transactions }}</p>
+    <p><strong>إجمالي العمولات:</strong> {{ total_commission|iq_currency }}</p>
+</div>
+
+<div class="card">
+    <h3>آخر العمليات</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>التاريخ</th>
+                <th>فئة الشحن</th>
+                <th>الحالة</th>
+                <th>العمولة</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for t in recent_transactions %}
+            <tr>
+                <td>{{ t.created_at }}</td>
+                <td>{{ t.denomination }}</td>
+                <td>
+                    {% if t.status == 'CONFIRMED' %}
+                        <span class="badge badge-success">مؤكدة</span>
+                    {% elif t.status == 'PRINTED' %}
+                        <span class="badge badge-danger">تمت الطباعة</span>
+                    {% else %}
+                        {{ t.status }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if t.status == 'CONFIRMED' %}
+                        {{ t.commission_amount|iq_currency }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">لا توجد عمليات حتى الآن</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

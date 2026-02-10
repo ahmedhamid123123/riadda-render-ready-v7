@@ -1,0 +1,105 @@
+/* ==================== Utility Classes ==================== */
+
+/* Colors */
+.text-light-gray { color: #555; }
+.text-gray { color: #777; }
+.text-dark-gray { color: #999; }
+.text-red { color: red; }
+
+/* Font Size */
+.text-small { font-size: 14px; }
+
+/* Spacing */
+.mt-10 { margin-top: 10px; }
+.mt-15 { margin-top: 15px; }
+.mr-10 { margin-right: 10px; }
+.mb-15 { margin-bottom: 15px; }
+.mb-20 { margin-bottom: 20px; }
+.m-0 { margin: 0; }
+.m-10 { margin: 0 10px; }
+.m-20 { margin: 0 20px; }
+
+/* Width */
+.max-width-300 { max-width: 300px; }
+.max-width-420 { max-width: 420px; }
+
+/* Text Align */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Display */
+.d-inline { display: inline; }
+.d-block { display: block; }
+
+/* Forms and Inputs */
+.form-group-inline { display: inline; }
+
+/* Navbar */
+.navbar .logo span {
+    font-size: 13px;
+    color: #ccc;
+}
+
+.navbar .user-area span {
+    margin: 0 10px;
+}
+
+/* Cards */
+.card p {
+    color: #555;
+}
+
+.card p.text-gray {
+    color: #777;
+    font-size: 14px;
+}
+
+/* Tables */
+table td.max-width-300 {
+    max-width: 300px;
+}
+
+/* Forms */
+form.form-margin-bottom {
+    margin-bottom: 15px;
+}
+
+form.form-display-inline {
+    display: inline;
+}
+
+form.form-margin-right {
+    margin-right: 10px;
+}
+
+label.label-margin-right {
+    margin-right: 10px;
+}
+
+/* Buttons and Actions */
+button[type="submit"],
+input[type="submit"] {
+    margin-top: 10px;
+}
+
+.form-actions {
+    margin-top: 15px;
+}
+
+/* Text Elements */
+small.text-gray {
+    color: #555;
+}
+
+.form-label {
+    margin-right: 10px;
+}
+
+/* Specific Sections */
+.permission-restricted h3 {
+    color: red;
+}
+
+.permission-restricted p {
+    color: #777;
+}

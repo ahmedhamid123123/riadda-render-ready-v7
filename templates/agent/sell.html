@@ -1,0 +1,66 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'css/agent-sell.css' %}">
+{% endblock %}
+{% block content %}
+
+<h2 class="page-title">بيع رصيد</h2>
+
+<!-- ================= Catalog Grid ================= -->
+<div class="catalog-grid">
+
+    {% for company in catalog %}
+    <div class="card company-card">
+
+        <!-- ===== Company Header ===== -->
+        <div class="company-header">
+            {% if company.logo %}
+                <img src="{{ company.logo }}" alt="{{ company.company_name }}">
+            {% endif %}
+            <strong class="company-name">
+                {{ company.company_name }}
+            </strong>
+        </div>
+
+        <!-- ===== Denominations ===== -->
+        <div class="denoms-grid">
+
+            {% for d in company.denominations %}
+            <form method="post"
+                  action="{% url 'agent-sell' %}"
+                  class="denom-form"
+                  onsubmit="return confirm('تأكيد بيع فئة {{ d.value }} د.ع؟');">
+
+                {% csrf_token %}
+                <input type="hidden" name="denomination_id" value="{{ d.id }}">
+
+                <button type="submit" class="denom-btn">
+                    <span class="denom-value">
+                        {{ d.value }} د.ع
+                    </span>
+                    <span class="denom-price">
+                        السعر: {{ d.price_to_agent }} د.ع
+                    </span>
+                </button>
+            </form>
+            {% endfor %}
+
+        </div>
+
+    </div>
+    {% empty %}
+        <p>لا توجد شركات متاحة حاليًا</p>
+    {% endfor %}
+
+</div>
+
+<!-- ================= Actions ================= -->
+<div class="card actions-card">
+    <a href="{% url 'agent-dashboard' %}" class="btn secondary">
+        ⬅ الرجوع للوحة الوكيل
+    </a>
+</div>
+
+{% endblock %}

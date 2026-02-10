@@ -1,0 +1,164 @@
+{% extends "base/base.html" %}
+{% load currency %}
+
+{% block content %}
+
+<!-- ================= مقدمة الصفحة ================= -->
+<div class="card">
+    <h2>إدارة العمولات</h2>
+
+    <p>
+        من هذه الصفحة يمكنك تحديد العمولة الافتراضية لكل فئة شحن،
+        وكذلك تعيين عمولات مخصصة لوكلاء محددين.
+    </p>
+
+    <p class="text-gray">
+        <strong>ملاحظة:</strong>
+        في حال وجود عمولة مخصصة لوكيل، يتم تجاهل العمولة الافتراضية له.
+    </p>
+
+    {% if request.user.is_super_admin %}
+        <div class="badge badge-danger">
+            صلاحيات: Super Admin
+        </div>
+    {% endif %}
+</div>
+
+{% if request.user.is_super_admin %}
+
+<!-- ================= العمولات الافتراضية ================= -->
+<div class="card">
+    <h3>العمولات الافتراضية</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الشركة</th>
+                <th>فئة الشحن</th>
+                <th>العمولة الحالية</th>
+                <th>تحديث</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for c in default_commissions %}
+            <tr>
+                <td>{{ c.company }}</td>
+                <td>{{ c.denomination }}</td>
+                <td>{{ c.amount|iq_currency }}</td>
+                <td>
+                    <form method="post"
+                          action="{% url 'commissions_update_default' c.id %}"
+                          onsubmit="return confirm('هل أنت متأكد من تعديل هذه العمولة؟');">
+                        {% csrf_token %}
+                        <input type="number"
+                               name="amount"
+                               value="{{ c.amount }}"
+                               min="0"
+                               step="1"
+                               required>
+                        <button type="submit" class="btn btn-warning">
+                            تحديث
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">لا توجد عمولات افتراضية معرفة حالياً</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= العمولات المخصصة للوكلاء ================= -->
+<div class="card">
+    <h3>عمولات مخصصة للوكلاء</h3>
+
+    <form method="post"
+          action="{% url 'commissions_add_agent' %}"
+          class="mb-20"
+          onsubmit="return confirm('هل أنت متأكد من إضافة هذه العمولة المخصصة؟');">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <label>الوكيل</label>
+            <select name="agent_id" required>
+                <option value="">اختر الوكيل</option>
+                {% for agent in agents %}
+                    <option value="{{ agent.id }}">{{ agent.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>الشركة</label>
+            <select name="company" required>
+                <option value="">اختر الشركة</option>
+                <option value="ASIACELL">آسيا سيل</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>فئة الشحن</label>
+            <select name="denomination" required>
+                <option value="">الفئة</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="25">25</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>العمولة</label>
+            <input type="number" name="amount" min="0" step="1" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            إضافة عمولة مخصصة
+        </button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الوكيل</th>
+                <th>الشركة</th>
+                <th>فئة الشحن</th>
+                <th>العمولة</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ac in agent_commissions %}
+            <tr>
+                <td>{{ ac.agent.username }}</td>
+                <td>{{ ac.company }}</td>
+                <td>{{ ac.denomination }}</td>
+                <td>{{ ac.amount|iq_currency }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">لا توجد عمولات مخصصة حالياً</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+
+<!-- ================= رسالة منع الصلاحية ================= -->
+<div class="card">
+    <h3 class="text-red">وصول مقيّد</h3>
+    <p>
+        هذه الصفحة مخصصة لـ <strong>Super Admin</strong> فقط.
+    </p>
+    <p class="text-gray">
+        إذا كنت بحاجة لتعديل العمولات، يرجى التواصل مع مدير النظام.
+    </p>
+</div>
+
+{% endif %}
+
+{% endblock %}

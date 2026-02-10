@@ -1,0 +1,157 @@
+/* =========================
+   GLOBAL RESPONSIVE RULES
+   ========================= */
+
+/* Tables responsive */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Default table fix */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* =========================
+   DESKTOP (Large Screens)
+   ========================= */
+@media (min-width: 992px) {
+
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
+
+/* =========================
+   TABLET (Medium Screens)
+   ========================= */
+@media (max-width: 991px) {
+
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    button {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+}
+
+/* =========================
+   MOBILE (Small Screens)
+   ========================= */
+@media (max-width: 576px) {
+
+    body {
+        font-size: 14px;
+    }
+
+    h1, h2, h3 {
+        font-size: 18px;
+    }
+
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    /* Buttons full width */
+    button {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    /* Forms stacked */
+    form {
+        display: block;
+    }
+
+    input, select {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    /* Tables scroll */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+/* =========================
+   POS DEVICES (7–8 inch)
+   ========================= */
+@media (min-width: 600px) and (max-width: 900px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    h1, h2, h3 {
+        font-size: 18px;
+    }
+
+    /* Cards tighter */
+    .card {
+        padding: 14px;
+        margin-bottom: 10px;
+    }
+
+    /* Buttons optimized for touch */
+    button {
+        font-size: 15px;
+        padding: 10px 14px;
+        border-radius: 6px;
+    }
+
+    /* Inputs */
+    input, select {
+        font-size: 15px;
+        padding: 8px;
+    }
+
+    /* Tables readable */
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    /* Dashboard cards layout */
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    /* Prevent too much scrolling */
+    .container {
+        padding: 10px;
+    }
+}
+

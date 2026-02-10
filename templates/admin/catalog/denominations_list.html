@@ -1,0 +1,16 @@
+{% extends "base/base.html" %}
+{% block content %}
+<h2>فئات الشحن</h2>
+<a href="{% url 'admin-denomination-add' %}">➕ إضافة فئة</a>
+<table>
+<tr><th>الشركة</th><th>القيمة</th><th>السعر للوكيل</th><th></th></tr>
+{% for d in denominations %}
+<tr>
+<td>{{ d.company.name_ar }}</td>
+<td>{{ d.value }}</td>
+<td>{{ d.price_to_agent }}</td>
+<td><a href="{% url 'admin-denomination-edit' d.id %}">تعديل</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

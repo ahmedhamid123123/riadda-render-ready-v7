@@ -1,0 +1,265 @@
+{% extends "base/base.html" %}
+{% load currency %}
+
+{% block content %}
+
+<!-- ================= معلومات الوكيل ================= -->
+<div class="card">
+    <h2>معلومات الوكيل</h2>
+
+    <p>
+        <strong>اسم المستخدم:</strong>
+        {{ agent.username }}
+    </p>
+
+    <p>
+        <strong>حالة الحساب:</strong>
+        {% if agent.is_active %}
+            <span class="badge badge-success">فعال</span>
+        {% else %}
+            <span class="badge badge-danger">موقوف</span>
+        {% endif %}
+    </p>
+
+    <p>
+        <strong>الرصيد الحالي:</strong>
+        {{ balance|iq_currency }}
+    </p>
+
+    <!-- ===== إجراءات الإدارة ===== -->
+    <div class="mt-10">
+                {% if ALLOW_AGENT_USERNAME_EDIT %}
+                    {% if request.user.is_super_admin %}
+                        <form method="post"
+                            action="/accounts/admin/agents/{{ agent.id }}/edit-username/"
+                            class="form-display-inline mr-10">
+                            {% csrf_token %}
+                            <input type="text" name="username" placeholder="اسم المستخدم الجديد" required>
+                            <button type="submit">تحديث اسم المستخدم</button>
+                        </form>
+                    {% elif request.user.role == 'ADMIN' and request.user.permissions and request.user.permissions.can_edit_agents %}
+                        <form method="post"
+                            action="/accounts/admin/agents/{{ agent.id }}/edit-username/"
+                            class="form-display-inline mr-10">
+                            {% csrf_token %}
+                            <input type="text" name="username" placeholder="اسم المستخدم الجديد" required>
+                            <button type="submit">تحديث اسم المستخدم</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+        <!-- تفعيل / إيقاف الوكيل -->
+          <form method="post"
+              action="/accounts/admin/agents/{{ agent.id }}/toggle/"
+              class="form-display-inline">
+            {% csrf_token %}
+            <button type="submit">
+                {% if agent.is_active %}
+                    إيقاف حساب الوكيل
+                {% else %}
+                    تفعيل حساب الوكيل
+                {% endif %}
+            </button>
+        </form>
+
+        <!-- تعديل الرصيد -->
+          <form method="post"
+              action="/accounts/admin/agents/{{ agent.id }}/adjust-balance/"
+              class="form-display-inline mr-10">
+            {% csrf_token %}
+            <input type="number"
+                   name="amount"
+                   placeholder="المبلغ (+ أو -)"
+                   required>
+            <input type="text"
+                   name="note"
+                   placeholder="ملاحظة (اختياري)">
+            <button type="submit">
+                تحديث الرصيد
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h3>تغيير كلمة مرور الوكيل</h3>
+
+    <form method="post" action="/accounts/admin/agents/{{ agent.id }}/reset-password/">
+        {% csrf_token %}
+        <input type="password" name="password" placeholder="كلمة مرور جديدة" required>
+        <button type="submit">تغيير كلمة المرور</button>
+    </form>
+</div>
+
+
+<!-- ================= مقارنة شهرية ================= -->
+<div class="card">
+    <h3>المقارنة الشهرية (العمليات المؤكدة)</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الفترة</th>
+                <th>إجمالي المبلغ</th>
+                <th>عدد العمليات</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>هذا الشهر</td>
+                <td>{{ current_amount|iq_currency }}</td>
+                <td>{{ current_count }}</td>
+            </tr>
+            <tr>
+                <td>الشهر السابق</td>
+                <td>{{ last_amount|iq_currency }}</td>
+                <td>{{ last_count }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="mt-10">
+        <strong>نسبة التغيير:</strong>
+        {% if change_percentage is not None %}
+            {% if change_percentage >= 0 %}
+                <span class="badge badge-success">
+                    +{{ change_percentage|floatformat:2 }} %
+                </span>
+            {% else %}
+                <span class="badge badge-danger">
+                    {{ change_percentage|floatformat:2 }} %
+                </span>
+            {% endif %}
+        {% else %}
+            <span>-</span>
+        {% endif %}
+    </p>
+</div>
+
+<!-- ================= عمليات الوكيل ================= -->
+<div class="card">
+    <h2>عمليات الوكيل</h2>
+
+    <!-- ===== فلترة العمليات ===== -->
+    <form method="get" class="form-margin-bottom mb-15" role="search" aria-label="فلترة عمليات الوكيل">
+        <select name="status" title="حالة العملية" aria-label="حالة العملية">
+            <option value="">كل الحالات</option>
+            <option value="CONFIRMED"
+                {% if status_filter == "CONFIRMED" %}selected{% endif %}>
+                مؤكدة
+            </option>
+            <option value="PRINTED"
+                {% if status_filter == "PRINTED" %}selected{% endif %}>
+                تمت الطباعة
+            </option>
+        </select>
+
+        <label>من:</label>
+        <input type="date" name="from" value="{{ date_from }}" aria-label="من تاريخ" title="التاريخ الابتدائي">
+
+        <label>إلى:</label>
+        <input type="date" name="to" value="{{ date_to }}" aria-label="إلى تاريخ" title="التاريخ النهاية">
+
+        <button type="submit">فلترة</button>
+        <a href="{% url 'admin_agent_detail' agent.id %}">إعادة تعيين</a>
+    </form>
+
+    <!-- ===== أزرار التصدير ===== -->
+    <div class="mb-15">
+        <!-- تصدير Excel -->
+        <form method="get"
+              action="/accounts/admin/agents/{{ agent.id }}/export-excel/"
+              class="form-display-inline">
+            <input type="hidden" name="status" value="{{ status_filter }}">
+            <input type="hidden" name="from" value="{{ date_from }}">
+            <input type="hidden" name="to" value="{{ date_to }}">
+            <button type="submit">
+                تصدير Excel
+            </button>
+        </form>
+
+        <!-- تصدير PDF -->
+        <form method="get"
+              action="/accounts/admin/agents/{{ agent.id }}/export-pdf/"
+              class="form-display-inline mr-10">
+            <input type="hidden" name="status" value="{{ status_filter }}">
+            <input type="hidden" name="from" value="{{ date_from }}">
+            <input type="hidden" name="to" value="{{ date_to }}">
+            <button type="submit">
+                تصدير PDF
+            </button>
+        </form>
+    </div>
+
+    <!-- ===== ملخص حسب الفلترة ===== -->
+    <div class="card">
+        <h3>ملخص العمليات حسب الفلترة</h3>
+        <p>
+            <strong>إجمالي المبلغ:</strong>
+            {{ total_amount|iq_currency }}
+        </p>
+    </div>
+
+    <!-- ===== جدول العمليات ===== -->
+    <table aria-label="جدول عمليات الوكيل">
+        <caption>عمليات الوكيل</caption>
+        <thead>
+            <tr>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for t in page_obj %}
+            <tr>
+                <td>{{ t.created_at }}</td>
+                <td>{{ t.price|iq_currency }}</td>
+                <td>
+                    {% if t.status == "CONFIRMED" %}
+                        <span class="badge badge-success">مؤكدة</span>
+                    {% elif t.status == "PRINTED" %}
+                        <span class="badge badge-danger">تمت الطباعة</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ t.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">لا توجد عمليات مطابقة</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ===== Pagination ===== -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="mt-15 text-center">
+        {% if page_obj.has_previous %}
+            <a href="?page=1&status={{ status_filter }}&from={{ date_from }}&to={{ date_to }}">
+                الأولى
+            </a>
+            <a href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}&from={{ date_from }}&to={{ date_to }}">
+                السابقة
+            </a>
+        {% endif %}
+
+        <span class="m-10">
+            صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}&from={{ date_from }}&to={{ date_to }}">
+                التالية
+            </a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&status={{ status_filter }}&from={{ date_from }}&to={{ date_to }}">
+                الأخيرة
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+    <a href="{% url 'agents_list' %}">← الرجوع إلى قائمة الوكلاء</a>
+
+{% endblock %}

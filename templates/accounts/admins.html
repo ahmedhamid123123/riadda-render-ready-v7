@@ -1,0 +1,179 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<!-- ================= مقدمة الصفحة ================= -->
+<div class="card">
+    <h2>إدارة المشرفين</h2>
+    <p>
+        هذه الصفحة مخصّصة لـ <strong>السوبر أدمن</strong> فقط لإدارة حسابات المشرفين،
+        تحديد صلاحياتهم، وتعطيلهم عند الحاجة.
+    </p>
+    <p style="color:#777;">
+        <strong>تنبيه:</strong>
+        لا يمكن للمشرف حذف نفسه أو تغيير صلاحياته.
+    </p>
+</div>
+
+<!-- ================= إضافة مشرف جديد ================= -->
+<div class="card">
+    <h3>إضافة مشرف جديد</h3>
+
+    <form method="post" action="{% url 'admin_add_admin' %}">
+        {% csrf_token %}
+
+        <input type="text"
+               name="username"
+               placeholder="اسم المستخدم"
+               required>
+
+        <input type="password"
+               name="password"
+               placeholder="كلمة المرور المؤقتة"
+               required>
+
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" name="is_super_admin">
+            تعيين كـ Super Admin
+        </label>
+
+        <label style="display:block; margin-top:10px;">
+            نوع الصلاحيات الافتراضية:
+        </label>
+
+        <select name="preset" required>
+            <option value="READ_ONLY">قراءة فقط</option>
+            <option value="MANAGER">مدير</option>
+            <option value="ACCOUNTANT">محاسب</option>
+        </select>
+
+        <br><br>
+        <button type="submit">إضافة المشرف</button>
+    </form>
+</div>
+
+<!-- ================= قائمة المشرفين ================= -->
+<div class="card">
+    <h3>قائمة المشرفين</h3>
+
+    <table aria-label="قائمة المشرفين">
+        <caption>قائمة المشرفين</caption>
+        <thead>
+            <tr>
+                <th>اسم المستخدم</th>
+                <th>الحالة</th>
+                <th>Super Admin</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for a in admins %}
+            <tr>
+                <td>{{ a.username }}</td>
+
+                <td>
+                    {% if a.is_active %}
+                        <span class="badge badge-success">نشط</span>
+                    {% else %}
+                        <span class="badge badge-danger">موقوف</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if a.is_super_admin %}
+                        <span class="badge badge-success">نعم</span>
+                    {% else %}
+                        <span class="badge badge-secondary">لا</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if a.id == request.user.id %}
+                        <span style="color:#999;">هذا أنت</span>
+                    {% else %}
+                        <!-- تفاصيل المشرف -->
+                        <a href="{% url 'admin_admin_detail' a.id %}">
+                            التفاصيل
+                        </a>
+
+                        |
+
+                        <!-- تعطيل / تفعيل -->
+                        <form method="post"
+                              action="/accounts/admin/admins/{{ a.id }}/toggle-status/"
+                              style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">
+                                {% if a.is_active %}
+                                    تعطيل
+                                {% else %}
+                                    تفعيل
+                                {% endif %}
+                            </button>
+                        </form>
+
+                        |
+
+                        <!-- تبديل Super Admin -->
+                        <form method="post"
+                              action="/accounts/admin/admins/{{ a.id }}/toggle-super/"
+                              style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">
+                                تبديل Super Admin
+                            </button>
+                        </form>
+
+                        |
+
+                        <!-- حذف -->
+                        <form method="post"
+                              action="/accounts/admin/admins/{{ a.id }}/delete/"
+                              style="display:inline;"
+                              onsubmit="return confirm('هل أنت متأكد من حذف المشرف؟');">
+                            {% csrf_token %}
+                            <button type="submit" style="color:red;">
+                                حذف
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">لا يوجد مشرفون مسجّلون</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= إعدادات السوبر أدمن ================= -->
+<div class="card">
+    <h3>إعدادات السوبر أدمن</h3>
+
+    <form method="post" action="{% url 'admin_toggle_profit' %}">
+        {% csrf_token %}
+        {% if SHOW_PROFIT %}
+            <button type="submit">إخفاء ظهور الأرباح للمشرفين</button>
+        {% else %}
+            <button type="submit">إظهار ظهور الأرباح للمشرفين</button>
+        {% endif %}
+    </form>
+</div>
+
+<div class="card mt-10">
+    <h3>تحكم تعديل أسماء الوكلاء</h3>
+
+    <form method="post" action="{% url 'admin_toggle_agent_username_edit' %}">
+        {% csrf_token %}
+        {% if ALLOW_AGENT_USERNAME_EDIT %}
+            <button type="submit">تعطيل تعديل أسماء الوكلاء</button>
+        {% else %}
+            <button type="submit">تمكين تعديل أسماء الوكلاء</button>
+        {% endif %}
+    </form>
+</div>
+</div>
+
+{% endblock %}

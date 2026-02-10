@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إيصال الشحن</title>
+
+    <style>
+        body {
+            font-family: Cairo, Tahoma, sans-serif;
+            max-width: 320px;
+            margin: auto;
+            text-align: center;
+        }
+        .line {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+        img {
+            margin-top: 10px;
+        }
+        .code-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h3>ريادة</h3>
+<p>شحن إلكتروني</p>
+
+<div class="line"></div>
+
+<p><strong>الشركة:</strong> آسيا سيل</p>
+<p><strong>فئة الشحن:</strong> {{ transaction.denomination }}</p>
+
+<div class="line"></div>
+
+<p><strong>كود الشحن</strong></p>
+<p class="code-text">
+    {{ transaction.code }}
+</p>
+
+<div class="line"></div>
+
+<p><strong>QR Code</strong></p>
+<img src="data:image/png;base64,{{ qr_code }}" width="150" alt="QR Code للعملية" title="QR Code" />
+
+<div class="line"></div>
+
+<p>{{ transaction.confirmed_at }}</p>
+
+<p>شكراً لاستخدامكم خدمتنا</p>
+
+</body>
+</html>

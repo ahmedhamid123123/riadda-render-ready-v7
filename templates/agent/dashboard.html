@@ -1,0 +1,76 @@
+{% extends "base/base.html" %}
+
+{% block title %}لوحة الوكيل{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title">لوحة الوكيل</h2>
+
+<!-- ================= Dashboard Grid ================= -->
+<div class="dashboard-grid">
+
+    <!-- ===== Balance Card ===== -->
+    <div class="card balance-card">
+        <h3>الرصيد الحالي</h3>
+
+        <p class="balance-amount">
+            {{ balance|default:"0"|floatformat:0 }} د.ع
+        </p>
+
+        <p class="hint-text">
+            آخر تحديث من النظام
+        </p>
+    </div>
+
+    <!-- ===== Daily Summary Card ===== -->
+    <div class="card summary-card">
+        <h3>ملخص اليوم</h3>
+
+        {% if summary and summary.date %}
+            <p class="summary-line">
+                <span class="icon">📅</span>
+                <strong>التاريخ:</strong>
+                {{ summary.date|date:"Y-m-d" }}
+            </p>
+
+            <p class="summary-total">
+                <span class="icon">💰</span>
+                إجمالي المبيعات:
+                <span class="summary-amount">
+                    {{ summary.total_amount|default:"0"|floatformat:0 }} د.ع
+                </span>
+            </p>
+
+            <p class="summary-line">
+                <span class="icon">🧾</span>
+                <strong>عدد العمليات:</strong>
+                {{ summary.total_transactions|default:"0" }}
+            </p>
+
+            <ul class="summary-list">
+                <li>✔️ المؤكدة: {{ summary.confirmed_count|default:"0" }}</li>
+                <li>🖨️ قيد الطباعة: {{ summary.printed_count|default:"0" }}</li>
+            </ul>
+        {% else %}
+            <p class="hint-text">
+                لا توجد بيانات مسجلة لليوم الحالي
+            </p>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- ================= Actions ================= -->
+<div class="card actions-card">
+    <div class="actions-grid">
+        <a href="{% url 'agent_sell' %}" class="btn btn-success">
+            ➕ بيع رصيد
+        </a>
+
+        <a href="{% url 'agent_transactions' %}" class="btn btn-secondary">
+            📄 العمليات
+        </a>
+    </div>
+</div>
+
+{% endblock %}

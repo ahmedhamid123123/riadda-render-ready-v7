@@ -1,0 +1,82 @@
+/* ================= Receipt Print CSS ================= */
+
+/* إعدادات عامة للطباعة */
+@page {
+    size: 80mm auto;     /* غيّر إلى 58mm إذا طابعتك 58 */
+    margin: 5mm;
+}
+
+body {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    color: #000;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+/* إخفاء أي عناصر غير ضرورية */
+.navbar,
+.actions,
+.no-print {
+    display: none !important;
+}
+
+/* ================= Receipt Container ================= */
+.receipt {
+    width: 100%;
+    text-align: center;
+}
+
+/* ================= Header ================= */
+.receipt-header {
+    margin-bottom: 8px;
+}
+
+.receipt-header h1 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.receipt-header h2 {
+    font-size: 13px;
+    margin: 2px 0;
+}
+
+/* ================= Divider ================= */
+.divider {
+    border-top: 1px dashed #000;
+    margin: 6px 0;
+}
+
+/* ================= Content ================= */
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+}
+
+.receipt-label {
+    font-weight: bold;
+}
+
+/* ================= Footer ================= */
+.receipt-footer {
+    margin-top: 10px;
+    font-size: 11px;
+}
+
+/* ================= QR ================= */
+.receipt-qr {
+    margin-top: 10px;
+}
+
+.receipt-qr img {
+    width: 120px;
+    height: auto;
+}
+
+/* ================= Hide Scrollbars ================= */
+::-webkit-scrollbar {
+    display: none;
+}

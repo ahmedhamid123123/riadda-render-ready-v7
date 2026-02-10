@@ -1,0 +1,38 @@
+<nav class="navbar" role="navigation" aria-label="Secondary navigation">
+
+    <!-- ===== اسم النظام ===== -->
+    <div class="navbar-brand">
+        <strong>ريادة – لوحة الإدارة</strong>
+    </div>
+
+    <!-- ===== روابط الأدمن ===== -->
+    {% if request.user.is_authenticated and request.user.role == 'ADMIN' %}
+    <div class="navbar-links">
+        <a href="{% url 'admin_dashboard' %}">لوحة التحكم</a>
+        <a href="{% url 'agents_list' %}">الوكلاء</a>
+        <a href="{% url 'commissions_list' %}">العمولات</a>
+        <a href="{% url 'profit_dashboard' %}">الأرباح</a>
+        <a href="{% url 'admin_audit_logs' %}">سجل العمليات</a>
+    </div>
+    {% endif %}
+
+    <!-- ===== روابط الوكيل ===== -->
+    {% if request.user.is_authenticated and request.user.role == 'AGENT' %}
+    <div class="navbar-links">
+        <a href="{% url 'agent_dashboard' %}">لوحة الوكيل</a>
+        <a href="{% url 'agent_transactions' %}">عملياتي</a>
+    </div>
+    {% endif %}
+
+    <!-- ===== حساب المستخدم ===== -->
+    {% if request.user.is_authenticated %}
+    <div class="navbar-user">
+        <span>
+            مرحبًا، {{ request.user.username }}
+        </span>
+        |
+        <a href="{% url 'logout' %}">تسجيل الخروج</a>
+    </div>
+    {% endif %}
+
+</nav>

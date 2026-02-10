@@ -1,0 +1,27 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="card" style="text-align:center; max-width:500px; margin:40px auto;">
+
+    <div style="font-size:48px; margin-bottom:10px;">
+        {{ icon }}
+    </div>
+
+    <h2>{{ title }}</h2>
+
+    <p style="margin-top:10px;">
+        {{ message }}
+    </p>
+
+    {% if hint %}
+        <p style="color:#666; font-size:14px;">
+            {{ hint }}
+        </p>
+    {% endif %}
+
+    <a href="/" style="display:inline-block; margin-top:20px;">
+        العودة إلى الصفحة الرئيسية
+    </a>
+
+</div>
+{% endblock %}

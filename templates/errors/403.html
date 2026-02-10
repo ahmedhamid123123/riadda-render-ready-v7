@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>{{ title }}</h2>
+  <p>{{ message }}</p>
+  {% if details %}
+    <hr>
+    <pre style="white-space:pre-wrap; background:#f8f8f8; padding:10px">{{ details }}</pre>
+  {% endif %}
+  <p><a href="/">العودة إلى الصفحة الرئيسية</a></p>
+</div>
+{% endblock %}
+{% extends "errors/base_error.html" %}
+
+{% with
+    icon="🚫"
+    title="غير مصرح بالدخول"
+    message="لا تملك الصلاحية للوصول إلى هذه الصفحة."
+    hint="إذا كنت تعتقد أن هذا خطأ، يرجى مراجعة الإدارة."
+%}
+{% endwith %}

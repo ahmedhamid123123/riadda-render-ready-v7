@@ -1,0 +1,19 @@
+<ul class="menu">
+
+  {% if perms.can_view_agents %}
+    <li><a href="{% url 'agents_list' %}">الوكلاء</a></li>
+  {% endif %}
+
+  {% if perms.can_view_commissions %}
+    <li><a href="{% url 'commissions_list' %}">العمولات</a></li>
+  {% endif %}
+
+  {% if perms.can_view_reports and perms.can_view_profit and SHOW_PROFIT %}
+    <li><a href="{% url 'profit_dashboard' %}">الأرباح</a></li>
+  {% endif %}
+
+  {% if perms.can_view_audit_logs %}
+    <li><a href="{% url 'audit_logs' %}">سجل العمليات</a></li>
+  {% endif %}
+
+</ul>

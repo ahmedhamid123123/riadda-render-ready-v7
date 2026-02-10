@@ -1,0 +1,75 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<h2 class="page-title">عملياتي</h2>
+
+<div class="card">
+<table class="table" aria-label="عمليات الوكيل">
+    <caption>عمليات الوكيل</caption>
+    <thead>
+        <tr>
+            <th>التاريخ</th>
+            <th>الشركة</th>
+            <th>الفئة</th>
+            <th>الحالة</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for t in transactions %}
+        <tr>
+            <td>{{ t.confirmed_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ t.company.name_ar }}</td>
+            <td>{{ t.denomination.value }} د.ع</td>
+
+            <td>
+                {% if t.status == 'CONFIRMED' %}
+                    <span class="badge success">مؤكدة</span>
+                {% else %}
+                    <span class="badge warning">قيد الطباعة</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if t.status == 'CONFIRMED' %}
+
+                    <!-- طباعة -->
+                        <a href="{% url 'receipt-html' t.public_token %}"
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn small" aria-label="طباعة الإيصال">
+                            🖨 طباعة
+                        </a>
+
+                    <!-- إعادة طباعة -->
+                    {% if t.receipt_reissue_count < t.receipt_reissue_limit %}
+                        <a href="{% url 'agent-reprint-receipt' t.id %}"
+                           class="btn small secondary">
+                            🔁 إعادة
+                        </a>
+                        <small>
+                            ({{ t.receipt_reissue_limit|add:"-t.receipt_reissue_count" }}
+                            متبقي)
+                        </small>
+                    {% else %}
+                        <span class="text-muted">
+                            🚫 انتهت الإعادات
+                        </span>
+                    {% endif %}
+
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">لا توجد عمليات</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

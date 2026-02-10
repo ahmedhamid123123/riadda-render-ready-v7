@@ -1,0 +1,137 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<!-- ================= مقدمة الصفحة ================= -->
+<div class="card">
+    <h2>إدارة صلاحيات المشرف</h2>
+
+    <p>
+        من هذه الصفحة يمكن لـ <strong>السوبر أدمن</strong>
+        التحكم بصلاحيات المشرف وتغيير نوعه الوظيفي (ترقية / تخفيض).
+    </p>
+
+    <p class="text-muted">
+        المشرف الحالي:
+        <strong>{{ admin_obj.username }}</strong>
+    </p>
+</div>
+
+<!-- ================= نموذج الصلاحيات ================= -->
+<div class="card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- ================= Preset ================= -->
+        <h3>نوع المشرف</h3>
+        <p class="hint-text">
+            اختيار نوع جاهز سيقوم بملء الصلاحيات تلقائيًا.
+            يمكنك بعدها التعديل اليدوي إن أردت.
+        </p>
+
+        <select name="preset">
+            <option value="CUSTOM" {% if perms.preset == 'CUSTOM' %}selected{% endif %}>
+                مخصص (تعديل يدوي)
+            </option>
+            <option value="READ_ONLY" {% if perms.preset == 'READ_ONLY' %}selected{% endif %}>
+                قراءة فقط
+            </option>
+            <option value="MANAGER" {% if perms.preset == 'MANAGER' %}selected{% endif %}>
+                مدير
+            </option>
+            <option value="ACCOUNTANT" {% if perms.preset == 'ACCOUNTANT' %}selected{% endif %}>
+                محاسب
+            </option>
+        </select>
+
+        <p class="text-muted mt-10">
+            النوع الحالي:
+            <strong>{{ perms.get_preset_display }}</strong>
+        </p>
+
+        {% if perms.preset != 'CUSTOM' %}
+            <div class="alert alert-info mt-10">
+                ℹ️ هذا المشرف حالياً يستخدم قالب صلاحيات جاهز ({{ perms.get_preset_display }}).
+                أي تعديل يدوي سيحوّل النوع تلقائيًا إلى <strong>مخصص</strong>.
+            </div>
+        {% endif %}
+
+        <hr>
+
+        <!-- ================= Manual Permissions ================= -->
+        <h3>الصلاحيات التفصيلية</h3>
+
+        <div class="permissions-group">
+
+            <label>
+                <input type="checkbox" name="can_view_agents"
+                       {% if perms.can_view_agents %}checked{% endif %}>
+                مشاهدة الوكلاء
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_add_agents"
+                       {% if perms.can_add_agents %}checked{% endif %}>
+                إضافة وكلاء جدد
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_edit_agents"
+                       {% if perms.can_edit_agents %}checked{% endif %}>
+                تعديل الوكلاء
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_view_commissions"
+                       {% if perms.can_view_commissions %}checked{% endif %}>
+                مشاهدة العمولات
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_edit_commissions"
+                       {% if perms.can_edit_commissions %}checked{% endif %}>
+                تعديل العمولات
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_view_reports"
+                       {% if perms.can_view_reports %}checked{% endif %}>
+                مشاهدة التقارير
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_view_profit"
+                       {% if perms.can_view_profit %}checked{% endif %}>
+                إظهار صفحة الأرباح
+            </label>
+
+            <label>
+                <input type="checkbox" name="can_view_audit_logs"
+                       {% if perms.can_view_audit_logs %}checked{% endif %}>
+                مشاهدة سجل العمليات
+            </label>
+
+        </div>
+
+        <hr>
+
+        <!-- ================= Actions ================= -->
+        <div class="form-actions">
+            <button type="submit" class="btn primary">
+                💾 حفظ الصلاحيات
+            </button>
+
+            <a href="{% url 'admin_admin_detail' admin_obj.id %}" class="btn secondary">
+                ⬅️ إلغاء
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+<!-- ================= إضافة مشرف جديد ================= -->
+<div class="card mb-20">
+    <h3>إضافة مشرف جديد</h3>
+
+    <form method="post" action="{% url 'admin_add_admin' %}">        
+        {% csrf_token %}    

@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ريادة | نظام بيع بطاقات الشحن</title>
+
+    <!-- خط عربي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS العام -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
+    <link rel="stylesheet" href="{% static 'css/agent-ui.css' %}">
+    
+    <style>
+        .logo span {
+            font-size: 13px;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <a class="skip-link" href="#main-content">تخطي إلى المحتوى</a>
+
+<!-- ================= Navbar ================= -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+
+    <!-- اسم النظام -->
+    <div class="logo" role="banner">
+        <strong>ريادة</strong>
+        <span>نظام الشحن</span>
+    </div>
+
+    <!-- ================= Links ================= -->
+    <div class="links">
+
+        {% if request.user.is_authenticated %}
+
+            <!-- ================= Super Admin ================= -->
+            {% if request.user.role == 'ADMIN' and request.user.is_super_admin %}
+
+                <a href="{% url 'admin_dashboard' %}">لوحة التحكم</a>
+                <a href="{% url 'admin_admins' %}">إدارة المشرفين</a>
+                <a href="{% url 'agents_list' %}">إدارة الوكلاء</a>
+                <a href="{% url 'commissions_list' %}">العمولات</a>
+                <a href="{% url 'profit_dashboard' %}">الأرباح</a>
+                <a href="{% url 'admin_audit_logs' %}">سجل العمليات</a>
+
+            <!-- ================= Normal Admin ================= -->
+            {% elif request.user.role == 'ADMIN' and request.user.permissions %}
+
+                <a href="{% url 'admin_dashboard' %}">لوحة التحكم</a>
+
+                {% if request.user.permissions.can_view_agents %}
+                    <a href="{% url 'agents_list' %}">إدارة الوكلاء</a>
+                {% endif %}
+
+                {% if request.user.permissions.can_view_commissions %}
+                    <a href="{% url 'commissions_list' %}">العمولات</a>
+                {% endif %}
+
+                {% if request.user.permissions.can_view_reports and request.user.permissions.can_view_profit and SHOW_PROFIT %}
+                    <a href="{% url 'profit_dashboard' %}">الأرباح</a>
+                {% endif %}
+
+                {% if request.user.permissions.can_view_audit_logs %}
+                    <a href="{% url 'admin_audit_logs' %}">سجل العمليات</a>
+                {% endif %}
+
+            {% endif %}
+
+            <!-- ================= Agent ================= -->
+            {% if request.user.role == 'AGENT' %}
+                <a href="{% url 'agent_dashboard' %}">لوحة الوكيل</a>
+                <a href="{% url 'agent_transactions' %}">عملياتي</a>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+    <!-- ================= User Area ================= -->
+    <div class="user-area">
+        {% if request.user.is_authenticated %}
+            <span class="username">
+                مرحبًا، {{ request.user.username }}
+            </span>
+            |
+            <a href="{% url 'logout' %}" class="logout">
+                تسجيل الخروج
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}">تسجيل الدخول</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- ================= Content ================= -->
+<main id="main-content" class="container" role="main">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+<!-- Footer landmark (if present in templates) -->
+
+</body>
+</html>

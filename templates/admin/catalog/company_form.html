@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+{% block content %}
+<h2>{% if company %}تعديل{% else %}إضافة{% endif %} شركة</h2>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<input name="code" placeholder="CODE" value="{{ company.code|default:'' }}">
+<input name="name_ar" placeholder="الاسم" value="{{ company.name_ar|default:'' }}">
+<select name="company_type">
+<option value="MOBILE">موبايل</option>
+<option value="INTERNET">إنترنت</option>
+</select>
+<input name="display_order" type="number" value="{{ company.display_order|default:0 }}">
+<label><input type="checkbox" name="is_active" {% if company.is_active %}checked{% endif %}> فعال</label>
+<input type="file" name="logo">
+<button type="submit">حفظ</button>
+</form>
+{% endblock %}

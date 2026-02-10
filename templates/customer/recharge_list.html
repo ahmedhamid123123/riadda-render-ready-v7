@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>اختر شركة الشحن</h2>
+    <p>اختر الشركة ثم فئة الشحن المناسبة</p>
+</div>
+
+{% for company in companies %}
+    <div class="card">
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img src="{{ company.logo.url }}"
+                 alt="{{ company.name }}"
+                 style="width:80px; height:auto;">
+            <h3>{{ company.name }}</h3>
+        </div>
+
+        <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+            {% for cat in company.categories.all %}
+                {% if cat.is_active %}
+                    <div class="card"
+                         style="width:120px; text-align:center;">
+                        <img src="{{ company.logo.url }}"
+                                 alt="{{ company.name }}"
+                                 style="width:60px; margin-bottom:5px;">
+                        <strong>{{ cat.denomination }} ألف</strong>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <p>لا توجد فئات متاحة</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

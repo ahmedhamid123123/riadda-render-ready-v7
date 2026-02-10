@@ -1,0 +1,139 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>سجل العمليات (Audit Log)</h2>
+
+    <!-- ===== فلترة متقدمة ===== -->
+    <form method="get" class="form-margin-bottom mb-20">
+
+        <label>نوع العملية:</label>
+        <select name="action" title="نوع العملية" aria-label="نوع العملية">
+            <option value="">الكل</option>
+            {% for code, label in actions %}
+                <option value="{{ code }}" {% if action_filter == code %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label class="label-margin-right">المستخدم:</label>
+        <select name="user" title="المستخدم" aria-label="المستخدم">
+            <option value="">الكل</option>
+            {% for u in users %}
+                <option value="{{ u.id }}" {% if user_filter == u.id|stringformat:"s" %}selected{% endif %}>
+                    {{ u.username }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>من تاريخ:</label>
+        <input type="date" name="from" value="{{ date_from }}" aria-label="من تاريخ" title="التاريخ الابتدائي">
+
+        <label>إلى تاريخ:</label>
+        <input type="date" name="to" value="{{ date_to }}" aria-label="إلى تاريخ" title="التاريخ النهاية">
+
+        <br><br>
+
+        <button type="submit">فلترة</button>
+        <a href="{% url 'admin_audit_logs' %}">إعادة تعيين</a>
+    </form>
+
+    <!-- ===== أزرار التصدير ===== -->
+    <div class="mt-10">
+        <form method="get" action="/accounts/admin/audit-logs/export-excel/" class="form-display-inline">
+            <input type="hidden" name="action" value="{{ action_filter }}">
+            <input type="hidden" name="user" value="{{ user_filter }}">
+            <input type="hidden" name="from" value="{{ date_from }}">
+            <input type="hidden" name="to" value="{{ date_to }}">
+            <button type="submit">تصدير Excel</button>
+        </form>
+
+        <form method="get" action="/accounts/admin/audit-logs/export-pdf/" class="form-display-inline mr-10">
+            <input type="hidden" name="action" value="{{ action_filter }}">
+            <input type="hidden" name="user" value="{{ user_filter }}">
+            <input type="hidden" name="from" value="{{ date_from }}">
+            <input type="hidden" name="to" value="{{ date_to }}">
+            <button type="submit">تصدير PDF</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>التاريخ</th>
+                <th>المستخدم</th>
+                <th>العملية</th>
+                <th>المستهدف</th>
+                <th>العملية المرتبطة</th>
+                <th>التفاصيل</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for log in page_obj %}
+            <tr>
+                <td>{{ log.created_at }}</td>
+                <td>{{ log.actor }}</td>
+                <td>{{ log.arabic_action }}</td>
+                <td>
+                    {% if log.target_user %}
+                        {{ log.target_user }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if log.transaction_id %}
+                        {{ log.transaction_id }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td class="max-width-300">
+                    {{ log.message }}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">لا توجد سجلات</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ===== Pagination ===== -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-15">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}
+            &action={{ action_filter }}
+            &user={{ user_filter }}
+            &from={{ date_from }}
+            &to={{ date_to }}">
+                السابق
+            </a>
+        {% endif %}
+
+        <span>
+            صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}
+            &action={{ action_filter }}
+            &user={{ user_filter }}
+            &from={{ date_from }}
+            &to={{ date_to }}">
+                التالي
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

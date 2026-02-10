@@ -1,0 +1,144 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<!-- ================= إضافة وكيل جديد ================= -->
+{% if perms.is_super_admin or perms.can_add_agents %}
+<div class="card">
+    <h3>إضافة وكيل جديد</h3>
+
+    <form method="post" action="{% url 'admin_add_agent' %}">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="اسم المستخدم" required>
+        <input type="password" name="password" placeholder="كلمة المرور المؤقتة" required>
+        <button type="submit">إضافة الوكيل</button>
+    </form>
+</div>
+{% else %}
+<div class="card">
+    <p class="text-dark-gray">
+        ليس لديك صلاحية لإضافة وكلاء جدد.
+    </p>
+</div>
+{% endif %}
+
+<!-- ================= إدارة الوكلاء ================= -->
+<div class="card">
+    <h2>إدارة الوكلاء</h2>
+
+    <p>
+        من هذه الصفحة يمكنك إدارة حسابات الوكلاء، متابعة أرصدتهم،
+        وتفعيل أو إيقاف أي وكيل عند الحاجة.
+    </p>
+
+    <!-- ===== البحث والفلترة ===== -->
+    <form method="get" class="form-margin-bottom mb-20" role="search" aria-label="بحث الوكلاء">
+        <label>بحث باسم الوكيل:</label>
+        <input type="text" name="search" value="{{ search }}" placeholder="اسم المستخدم">
+
+        <label class="label-margin-right">الحالة:</label>
+        <select name="status">
+            <option value="">الكل</option>
+            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>فعال</option>
+            <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>موقوف</option>
+        </select>
+
+        <button type="submit">بحث</button>
+        <a href="{% url 'agents_list' %}">إعادة تعيين</a>
+    </form>
+</div>
+
+<!-- ================= جدول الوكلاء ================= -->
+    <div class="card">
+    <table aria-label="قائمة الوكلاء">
+        <caption>قائمة الوكلاء</caption>
+        <thead>
+            <tr>
+                <th>اسم الوكيل</th>
+                <th>الحالة</th>
+                <th>الرصيد</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in agents %}
+            <tr>
+                <td>{{ item.agent.username }}</td>
+
+                <td>
+                    {% if item.agent.is_active %}
+                        <span class="badge badge-success">فعال</span>
+                    {% else %}
+                        <span class="badge badge-danger">موقوف</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ item.balance }}</td>
+
+                <td>
+                    <!-- التفاصيل -->
+                    {% if perms.is_super_admin or perms.can_view_agents %}
+                        <a href="{% url 'admin_agent_detail' item.agent.id %}">التفاصيل</a>
+                    {% else %}
+                        <span class="text-gray">التفاصيل</span>
+                    {% endif %}
+
+                    |
+
+                    <!-- تفعيل / إيقاف -->
+                    {% if perms.is_super_admin or perms.can_edit_agents %}
+                        <form method="post"
+                              action="{% url 'admin_agent_toggle' item.agent.id %}"
+                              class="form-display-inline">
+                            {% csrf_token %}
+                            <button type="submit">
+                                {% if item.agent.is_active %}
+                                    إيقاف
+                                {% else %}
+                                    تفعيل
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="text-gray">تبديل الحالة</span>
+                    {% endif %}
+
+                    {% if perms.is_super_admin %}
+                        |
+                        <span class="text-red">حذف</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">لا يوجد وكلاء مطابقون لنتيجة البحث</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ===== Pagination ===== -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-15">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}&status={{ status_filter }}">
+                السابق
+            </a>
+        {% endif %}
+
+        <span>
+            صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&search={{ search }}&status={{ status_filter }}">
+                التالي
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+<!-- ================= إضافة وكيل جديد ================= -->    
+ 

@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+{% block content %}
+<h2>{% if denomination %}تعديل{% else %}إضافة{% endif %} فئة</h2>
+<form method="post">
+{% csrf_token %}
+<select name="company_id">
+{% for c in companies %}
+<option value="{{ c.id }}" {% if denomination.company.id == c.id %}selected{% endif %}>
+{{ c.name_ar }}
+</option>
+{% endfor %}
+</select>
+
+<select name="product_type">
+<option value="MOBILE">موبايل</option>
+<option value="INTERNET">إنترنت</option>
+</select>
+
+<input name="value" type="number" value="{{ denomination.value|default:'' }}">
+<input name="price_to_agent" type="number" value="{{ denomination.price_to_agent|default:'' }}">
+<input name="cost_to_company" type="number" value="{{ denomination.cost_to_company|default:'' }}">
+<label><input type="checkbox" name="is_active" {% if denomination.is_active %}checked{% endif %}> فعال</label>
+<button type="submit">حفظ</button>
+</form>
+{% endblock %}

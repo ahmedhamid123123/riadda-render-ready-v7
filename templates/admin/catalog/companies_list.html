@@ -1,0 +1,15 @@
+{% extends "base/base.html" %}
+{% block content %}
+<h2>الشركات</h2>
+<a href="{% url 'admin-company-add' %}">➕ إضافة شركة</a>
+<table>
+<tr><th>الاسم</th><th>الحالة</th><th></th></tr>
+{% for c in companies %}
+<tr>
+<td>{{ c.name_ar }}</td>
+<td>{{ c.is_active|yesno:"فعالة,موقوفة" }}</td>
+<td><a href="{% url 'admin-company-edit' c.id %}">تعديل</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

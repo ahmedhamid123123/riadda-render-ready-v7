@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ريادة | إيصال شحن</title>
+
+  <!-- CSS منفصل -->
+  <link rel="stylesheet" href="{% static 'css/receipt.css' %}">
+</head>
+<body>
+
+  <main class="page">
+    <section class="receipt-card">
+
+      <header class="receipt-header">
+        <div class="brand">
+          <div class="brand-title">ريادة</div>
+          <div class="brand-sub">نظام الشحن</div>
+        </div>
+
+        <div class="receipt-title">
+          <h1>إيصال شحن</h1>
+          <p class="muted">يرجى الاحتفاظ بالإيصال</p>
+        </div>
+      </header>
+
+      <div class="receipt-body">
+
+        <div class="grid">
+          <div class="row">
+            <span class="label">الشركة</span>
+            <span class="value">{{ receipt.company }}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">الفئة</span>
+            <span class="value">{{ receipt.denomination }}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">السعر</span>
+            <span class="value">{{ receipt.price }}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">الحالة</span>
+            <span class="value">{{ receipt.status }}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">تاريخ التأكيد</span>
+            <span class="value">{{ receipt.confirmed_at }}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">صالح لغاية</span>
+            <span class="value">{{ receipt.receipt_expires_at }}</span>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="qr-wrap">
+          <div class="qr-title">QR للإيصال</div>
+
+          {% if receipt.qr_base64_png %}
+            <img
+              class="qr-img"
+              src="data:image/png;base64,{{ receipt.qr_base64_png }}"
+              alt="QR Code"
+            >
+          {% else %}
+            <div class="muted">لا يوجد QR متاح</div>
+          {% endif %}
+
+          <div class="muted small">
+            إذا ما يفتح الرابط تلقائيًا، انسخ الرابط من الوكيل.
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="receipt-footer">
+        <div class="footer-note">
+          شكراً لاستخدامكم خدمات ريادة
+        </div>
+
+        <!-- بدون جافاسكربت: خليها زر/رابط بسيط يذكّر بالطباعة -->
+        <div class="actions no-print" role="contentinfo" aria-label="Footer actions">
+          <a class="btn" href="#" onclick="window.print();return false;">طباعة</a>
+          <a class="btn btn-secondary" href="/">رجوع</a>
+        </div>
+
+        <!-- إذا تريد “صفر JS” نهائياً، احذف سطر الطباعة أعلاه
+             وخلي فقط نص: للطباعة اضغط Ctrl+P -->
+      </footer>
+
+    </section>
+
+    <div class="print-hint no-print">
+      للطباعة: Ctrl + P
+    </div>
+  </main>
+
+</body>
+</html>

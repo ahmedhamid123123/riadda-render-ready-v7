@@ -1,0 +1,148 @@
+/* ================== Global ================== */
+body {
+    margin: 0;
+    font-family: "Cairo", "Tahoma", sans-serif;
+    background-color: #f4f6f9;
+    direction: rtl;
+}
+
+/* Accessibility: visible focus outline for keyboard users */
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid #2563eb33; /* semi-transparent blue */
+    outline-offset: 2px;
+}
+
+/* Skip link: hidden until focused */
+.skip-link {
+    position: absolute;
+    left: -999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+.skip-link:focus {
+    left: 10px;
+    top: 10px;
+    width: auto;
+    height: auto;
+    padding: 8px 12px;
+    background: #fff;
+    color: #2563eb;
+    z-index: 1000;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ================== Navbar ================== */
+.navbar {
+    background-color: #87CEEB; /* سمائي */
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.navbar .logo {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.navbar .links a {
+    color: #ffffff;
+    margin-left: 15px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.navbar .links a:hover {
+    text-decoration: underline;
+}
+
+.navbar .logout {
+    color: #ffb4b4;
+}
+
+/* ================== Content ================== */
+.container {
+    padding: 20px;
+}
+
+/* ================== Cards ================== */
+.card {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* ================== Tables ================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+table th {
+    background-color: #f0f0f0;
+}
+
+/* ================== Forms ================== */
+input, select, button {
+    padding: 7px;
+    margin: 5px 0;
+    font-family: "Cairo", sans-serif;
+}
+
+button {
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+
+/* ================== Status ================== */
+.badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.badge-success {
+    background-color: #16a34a;
+    color: #fff;
+}
+
+.badge-danger {
+    background-color: #dc2626;
+    color: #fff;
+}
+
+/* ================== Messages ================== */
+.message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.message.success {
+    background-color: #d1fae5;
+}
+
+.message.error {
+    background-color: #fee2e2;
+}

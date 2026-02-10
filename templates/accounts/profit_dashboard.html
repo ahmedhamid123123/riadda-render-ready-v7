@@ -1,0 +1,100 @@
+{% extends "base/base.html" %}
+{% load currency %}
+
+{% block content %}
+
+<!-- ================= مقدمة الصفحة ================= -->
+<div class="card">
+    <h2>تقارير الأرباح</h2>
+
+    <p>
+        تعرض هذه الصفحة ملخصًا عن أرباح النظام
+        استنادًا إلى العمليات المؤكدة والعمولات المحققة.
+    </p>
+
+    <p class="text-gray">
+        يمكنك استخدام الفلترة الزمنية لمراجعة الأرباح
+        لفترة محددة.
+    </p>
+</div>
+
+<!-- ================= فلترة زمنية ================= -->
+<div class="card">
+    <h3>فلترة حسب الفترة الزمنية</h3>
+
+    <form method="get">
+        <label>من تاريخ:</label>
+        <input type="date" name="from" value="{{ date_from }}" aria-label="من تاريخ" title="التاريخ الابتدائي">
+
+        <label>إلى تاريخ:</label>
+        <input type="date" name="to" value="{{ date_to }}" aria-label="إلى تاريخ" title="التاريخ النهاية">
+
+        <button type="submit">تطبيق الفلترة</button>
+        <a href="{% url 'profit_dashboard' %}">إعادة تعيين</a>
+    </form>
+</div>
+
+<!-- ================= ملخص الأرباح ================= -->
+<div class="card">
+    <h3>ملخص الأرباح</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>المؤشر</th>
+                <th>القيمة</th>
+                <th>التوضيح</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>إجمالي العمولات</td>
+                <td>{{ total_commission|iq_currency }}</td>
+                <td>مجموع العمولات من العمليات المؤكدة</td>
+            </tr>
+            <tr>
+                <td>عدد العمليات</td>
+                <td>{{ total_transactions }}</td>
+                <td>إجمالي العمليات المؤكدة</td>
+            </tr>
+            <tr>
+                <td>متوسط الربح لكل عملية</td>
+                <td>
+                    {% if total_transactions > 0 %}
+                        {{ avg_profit|iq_currency }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>الربح التقريبي لكل عملية</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= أزرار التصدير ================= -->
+<div class="card">
+    <h3>تصدير التقارير</h3>
+
+    <form method="get"
+          action="/accounts/admin/profit/export-excel/"
+          class="form-display-inline">
+        <input type="hidden" name="from" value="{{ date_from }}">
+        <input type="hidden" name="to" value="{{ date_to }}">
+        <button type="submit">
+            تصدير Excel
+        </button>
+    </form>
+
+    <form method="get"
+          action="/accounts/admin/profit/export-pdf/"
+          class="form-display-inline mr-10">
+        <input type="hidden" name="from" value="{{ date_from }}">
+        <input type="hidden" name="to" value="{{ date_to }}">
+        <button type="submit">
+            تصدير PDF
+        </button>
+    </form>
+</div>
+
+{% endblock %}

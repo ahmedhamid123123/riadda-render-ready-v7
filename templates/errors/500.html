@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="card">
+  <h2>{{ title }}</h2>
+  <p>{{ message }}</p>
+  {% if details %}
+    <hr>
+    <h4>تفاصيل الخطأ (للتطوير)</h4>
+    <pre style="white-space:pre-wrap; background:#f8f8f8; padding:10px">{{ details }}</pre>
+  {% endif %}
+  <p>إذا استمر الخطأ، تواصل مع فريق الدعم.</p>
+</div>
+{% endblock %}
+{% extends "errors/base_error.html" %}
+
+{% with
+    icon="⚠️"
+    title="خطأ في النظام"
+    message="حدث خطأ غير متوقع أثناء معالجة طلبك."
+    hint="يرجى المحاولة لاحقًا، أو إبلاغ الإدارة إذا استمر الخطأ."
+%}
+{% endwith %}

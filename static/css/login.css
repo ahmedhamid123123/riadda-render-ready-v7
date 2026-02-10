@@ -1,0 +1,123 @@
+/* ===============================
+   Login Page (Compact + Responsive)
+================================ */
+
+.login-wrapper {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+/* ===== Card ===== */
+.login-card {
+    width: 100%;
+    max-width: 310px;              /* 🔹 أصغر */
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px 20px;            /* 🔹 أخف */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+    text-align: center;
+}
+
+/* ===== Titles ===== */
+.login-title {
+    margin-bottom: 4px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.login-subtitle {
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #777;
+}
+
+/* ===== Form ===== */
+.form-group {
+    text-align: right;
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 5px;
+    color: #0d0d0d;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 9px 10px;             /* 🔹 أقل ارتفاع */
+    border-radius: 7px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+/* ===== Button ===== */
+.login-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    border: none;
+    border-radius: 7px;
+    background: #238cfd;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background: #cfdeff;
+}
+
+/* ===== Footer ===== */
+.login-footer {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #999;
+}
+
+/* ===============================
+   Responsive by HEIGHT (مهم)
+================================ */
+
+/* 🔽 شاشات قصيرة (POS / Landscape) */
+@media (max-height: 650px) {
+    .login-wrapper {
+        align-items: flex-start;    /* 🔹 يصعد للأعلى */
+        padding-top: 30px;
+    }
+}
+
+/* 🔽 شاشات أقصر */
+@media (max-height: 520px) {
+    .login-card {
+        padding: 18px 16px;
+    }
+
+    .login-title {
+        font-size: 17px;
+    }
+
+    .login-subtitle {
+        font-size: 12px;
+        margin-bottom: 14px;
+    }
+}
+
+/* 🔽 موبايل صغير جدًا */
+@media (max-width: 420px) {
+    .login-card {
+        max-width:auto;              /* 🔹 كامل العرض */
+    }
+}

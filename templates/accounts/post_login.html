@@ -1,0 +1,35 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<div class="card" style="text-align:center; max-width:400px; margin:40px auto;">
+    <h2>تم تسجيل الدخول بنجاح ✅</h2>
+
+    <p style="margin-top:15px;">
+        سيتم تحويلك تلقائيًا خلال
+        <strong id="counter">1</strong>
+        ثانية…
+    </p>
+
+    <p style="font-size:14px; color:#777;">
+        إذا لم يتم التحويل،
+        <a href="{{ target_url }}">اضغط هنا</a>
+    </p>
+</div>
+
+<script>
+    let seconds = 1;
+    const counter = document.getElementById('counter');
+
+    const interval = setInterval(() => {
+        seconds--;
+        counter.textContent = seconds;
+
+        if (seconds <= 0) {
+            clearInterval(interval);
+            window.location.href = "{{ target_url }}";
+        }
+    }, 1000);
+</script>
+
+{% endblock %}

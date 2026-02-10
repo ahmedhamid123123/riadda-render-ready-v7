@@ -1,0 +1,123 @@
+{% extends "base/base.html" %}
+
+{% block title %}لوحة تحكم المشرف{% endblock %}
+
+{% block content %}
+
+<!-- ================= ملخص عام ================= -->
+<div class="card">
+    <h2>لوحة التحكم</h2>
+    <p class="text-light-gray">
+        ملخص سريع عن أداء النظام والحركة الأخيرة.
+    </p>
+</div>
+
+<!-- ================= مؤشرات سريعة ================= -->
+<div class="card">
+    <h3>المؤشرات الرئيسية</h3>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>المؤشر</th>
+                    <th>القيمة</th>
+                    <th>ملاحظة</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>إجمالي المبيعات</td>
+                    <td><strong>{{ total_sales|default:"0"|floatformat:2 }}</strong></td>
+                    <td>إجمالي مبالغ العمليات المؤكدة</td>
+                </tr>
+                <tr>
+                    <td>عدد العمليات المؤكدة</td>
+                    <td><strong>{{ total_transactions|default:"0" }}</strong></td>
+                    <td>عمليات مكتملة بنجاح</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= مساحة تحسينات مستقبلية ================= -->
+<div class="card">
+    <h3>مساحة تحسينات مستقبلية</h3>
+
+    <ul>
+        <li>أعلى وكيل مبيعًا</li>
+        <li>أكثر فئة شحن استخدامًا</li>
+        <li>مقارنة يومية / أسبوعية</li>
+        <li>تنبيهات النظام</li>
+    </ul>
+
+    <p class="text-gray text-small">
+        هذه الواجهة مصممة للتوسعة بدون تغيير بنية الصفحة.
+    </p>
+</div>
+
+<!-- ================= آخر العمليات ================= -->
+{% if perms.can_view_reports %}
+<div class="card">
+    <h3>آخر العمليات</h3>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>الوكيل</th>
+                    <th>فئة الشحن</th>
+                    <th>الحالة</th>
+                    <th>التاريخ</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for t in recent_transactions %}
+                <tr>
+                    <td>{{ t.agent }}</td>
+                    <td>{{ t.denomination }}</td>
+                    <td>
+                        {% if t.status == 'CONFIRMED' %}
+                            <span class="badge badge-success">مؤكدة</span>
+                        {% elif t.status == 'PRINTED' %}
+                            <span class="badge badge-warning">تمت الطباعة</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ t.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-gray">
+                        لا توجد عمليات حديثة
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- ================= اختصارات إدارية ================= -->
+<div class="card">
+    <h3>اختصارات سريعة</h3>
+
+    <div class="quick-actions">
+        {% if perms.can_view_agents %}
+            <a href="{% url 'agents_list' %}" class="btn btn-primary">إدارة الوكلاء</a>
+        {% endif %}
+
+        {% if perms.can_view_commissions %}
+            <a href="{% url 'commissions_list' %}" class="btn btn-secondary">العمولات</a>
+        {% endif %}
+
+        {% if perms.can_view_reports %}
+            <a href="{% url 'profit_dashboard' %}" class="btn btn-outline">التقارير</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>تفاصيل المشرف</h2>
+
+    <p><strong>اسم المستخدم:</strong> {{ admin_obj.username }}</p>
+
+    <p>
+        <strong>الحالة:</strong>
+        {% if admin_obj.is_active %}
+            <span class="badge badge-success">نشط</span>
+        {% else %}
+            <span class="badge badge-danger">موقوف</span>
+        {% endif %}
+    </p>
+
+    <p>
+        <strong>Super Admin:</strong>
+        {% if admin_obj.is_super_admin %}
+            نعم
+        {% else %}
+            لا
+        {% endif %}
+    </p>
+</div>
+
+<div class="card">
+    <h3>نوع الصلاحيات (Preset)</h3>
+    <p>
+        {% if perms.can_edit_agents %}
+            مدير
+        {% elif perms.can_view_reports %}
+            محاسب
+        {% else %}
+            قراءة فقط
+        {% endif %}
+    </p>
+
+    <a href="{% url 'admin_admin_permissions' admin_obj.id %}">
+        إدارة الصلاحيات التفصيلية
+    </a>
+</div>
+
+<div class="card">
+    <h3>تغيير كلمة المرور</h3>
+
+    <form method="post"
+          action="/accounts/admin/admins/{{ admin_obj.id }}/reset-password/">
+        {% csrf_token %}
+        <input type="password" name="password" placeholder="كلمة المرور الجديدة" required>
+        <button type="submit">تغيير كلمة المرور</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>تفعيل / تعطيل المشرف</h3>
+
+    <form method="post"
+          action="/accounts/admin/admins/{{ admin_obj.id }}/toggle-status/">
+        {% csrf_token %}
+        <button type="submit">
+            {% if admin_obj.is_active %}
+                تعطيل المشرف
+            {% else %}
+                تفعيل المشرف
+            {% endif %}
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>آخر النشاطات</h3>
+    <ul>
+        {% for log in logs %}
+            <li>{{ log.created_at }} – {{ log.message }}</li>
+        {% empty %}
+            <li>لا يوجد سجل نشاط</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<a href="{% url 'admin_admins' %}">⬅ الرجوع لإدارة الأدمن</a>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Receipt Preview - Tx {{ tx.id }}</title>
+  <link rel="stylesheet" href="{% static 'css/receipt_thermal.css' %}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="toolbar">
+      <div>
+        <div class="title">Receipt Preview</div>
+        <div class="meta">TxID: {{ tx.id }} • Agent: {{ tx.agent.username }} • Status: {{ tx.status }}</div>
+        <div class="integrity {% if receipt_verified %}ok{% else %}bad{% endif %}">Integrity: {% if receipt_verified %}VERIFIED{% else %}UNVERIFIED{% endif %}</div>
+      </div>
+      <div class="actions">
+        <button onclick="window.print()">Print</button>
+      </div>
+    </div>
+
+    <div class="paper">
+      <pre class="receipt">
+{% for line in receipt.lines %}{{ line }}
+{% endfor %}</pre>
+    </div>
+  </div>
+</body>
+</html>

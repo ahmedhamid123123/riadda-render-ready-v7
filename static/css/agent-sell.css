@@ -1,0 +1,92 @@
+/* ================= Sell Page ================= */
+
+/* شبكة الشركات */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+/* كرت الشركة */
+.company-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* رأس الشركة */
+.company-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.company-header img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.company-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* شبكة الفئات */
+.denoms-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+/* زر الفئة */
+.denom-form {
+    margin: 0;
+}
+
+.denom-btn {
+    width: 100%;
+    background: #f5f7fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, transform 0.1s;
+}
+
+/* لمس POS */
+.denom-btn:active {
+    transform: scale(0.97);
+}
+
+.denom-btn:hover {
+    background: #eef2f7;
+}
+
+/* قيمة الفئة */
+.denom-value {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+/* سعر الوكيل */
+.denom-price {
+    font-size: 13px;
+    color: #555;
+}
+
+/* كرت الإجراءات */
+.actions-card {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* تحسين للأجهزة الصغيرة */
+@media (max-width: 480px) {
+    .denoms-grid {
+        grid-template-columns: 1fr;
+    }
+}

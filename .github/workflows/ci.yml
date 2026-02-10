@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  security-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install bandit safety
+
+      - name: Run compile check
+        run: python -m compileall src
+
+      - name: Run Bandit
+        run: |
+          mkdir -p security || true
+          python -m bandit -r src -f txt -o security/bandit_report.txt
+          echo "Bandit report saved to security/bandit_report.txt"
+
+      - name: Run Safety
+        run: |
+          mkdir -p security || true
+          python -m safety check -r requirements.txt --json > security/safety_report.json || true
+          echo "Safety report saved to security/safety_report.json"
+
+      - name: Show summary files
+        run: |
+          echo "--- Bandit (first 200 lines) ---"
+          head -n 200 security/bandit_report.txt || true
+          echo "--- Safety (first 200 chars) ---"
+          head -c 200 security/safety_report.json || true
