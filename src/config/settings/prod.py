@@ -101,14 +101,18 @@ REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
 # REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["login"] = os.environ.get("DRF_THROTTLE_LOGIN", "20/hour")
 
 # -------------------------
-# CSP (django-csp) - strict defaults
+# CSP (django-csp 4.x) - strict defaults
 # Adjust only if you really need external CDNs.
 # -------------------------
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'",)  # add "'unsafe-inline'" only if required
-CSP_IMG_SRC = ("'self'", "data:")
-CSP_FONT_SRC = ("'self'", "data:")
-CSP_CONNECT_SRC = ("'self'",)
-CSP_BASE_URI = ("'self'",)
-CSP_FRAME_ANCESTORS = ("'none'",)
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": ("'self'",),
+        "script-src": ("'self'",),
+        "style-src": ("'self'",),  # add "'unsafe-inline'" only if required
+        "img-src": ("'self'", "data:"),
+        "font-src": ("'self'", "data:"),
+        "connect-src": ("'self'",),
+        "base-uri": ("'self'",),
+        "frame-ancestors": ("'none'",),
+    }
+}
