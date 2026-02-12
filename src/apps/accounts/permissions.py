@@ -88,6 +88,28 @@ class IsAdminOrSuperAdmin(BasePermission):
         return is_admin(request.user)
 
 
+class IsAdminOrAgent(BasePermission):
+    """
+    Allow Admin (including Super Admin) or Agent users.
+    """
+    message = 'Admin or Agent privileges required.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or not getattr(user, 'is_authenticated', False):
+            return False
+
+        # Allow agents
+        if is_agent(user):
+            return True
+
+        # Allow admins (super admin included via is_admin)
+        if is_admin(user):
+            return True
+
+        return False
+
+
 class IsAuthenticatedAndActive(BasePermission):
     """
     Allow only authenticated & active users
@@ -119,3 +141,38 @@ def has_perm(user, perm_name):
         return False
 
     return getattr(perms, perm_name, False)
+
+
+# ======================================================
+# POS-only Permissions (Android / Sunmi)
+# ======================================================
+
+class IsPosAgent(BasePermission):
+    """
+    API Permission:
+    Allow access only to Agent users coming from POS channel and bound device.
+
+    Required headers:
+      - X-CLIENT: POS
+      - X-DEVICE-ID: <device identifier>
+    """
+    message = "POS Agent privileges required."
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not is_agent(user):
+            return False
+
+        if request.headers.get("X-CLIENT") != "POS":
+            return False
+
+        device_id = request.headers.get("X-DEVICE-ID")
+        if not device_id:
+            return False
+
+        bound = getattr(user, "pos_device_id", None)
+        # If no device bound yet, allow (binding can happen at login)
+        if bound and bound != device_id:
+            return False
+
+        return True

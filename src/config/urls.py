@@ -20,11 +20,27 @@ urlpatterns = [
     path("billing/", include("apps.billing.urls")),
     path("sales/", include("apps.sales.urls")),
 
-    # APIs
+    # APIs (legacy mounts kept for backward compatibility)
     path("api/accounts/", include("apps.accounts.api.urls")),
     path("api/sales/", include("apps.sales.api.urls")),
     path("api/catalog/", include(catalog_urls)),
     path("api/public/", include("apps.sales.api.catalog_urls")),
+
+    # Structured API mounts
+    # Web APIs (for web clients / admin panels) — allow Admins/SuperAdmin and Agents
+    path("api/web/accounts/", include("apps.accounts.api.web.urls")),
+    path("api/web/sales/", include("apps.sales.api.web.urls")),
+    path("api/web/billing/", include("apps.billing.api.web.urls")),
+    path("api/web/commissions/", include("apps.commissions.api.web.urls")),
+
+    # App APIs (POS / mobile) — Agent-only endpoints
+    path("api/app/accounts/", include("apps.accounts.api.app.app_urls")),
+    path("api/app/sales/", include("apps.sales.api.app.app_urls")),
+    path("api/app/billing/", include("apps.billing.api.app.app_urls")),
+    path("api/app/commissions/", include("apps.commissions.api.app.app_urls")),
+    # keep legacy POS mounts as well
+    path("api/pos/accounts/", include("apps.accounts.api.pos.urls")),
+    path("api/pos/sales/", include("apps.sales.api.pos.urls")),
 
     # Receipts
     path("receipt/<uuid:token>/", receipt_html_view, name="receipt-html"),

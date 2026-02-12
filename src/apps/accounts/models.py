@@ -22,6 +22,14 @@ class User(AbstractUser):
     )
 
     is_super_admin = models.BooleanField(default=False, db_index=True)
+
+    # POS device binding (Sunmi / Android)
+    pos_device_id = models.CharField(
+        max_length=128,
+        blank=True,
+        null=True,
+        help_text='Bound POS device identifier (e.g., Sunmi serial/Android ID)'
+    )
     full_name = models.CharField(max_length=150, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
