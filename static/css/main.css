@@ -1,4 +1,12 @@
 /* ================== Global ================== */
+/* Ensure consistent box-sizing and prevent horizontal overflow */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Keep scrollbar on the right even for RTL content by keeping the root LTR
+   while body/content remain RTL. This avoids left-side scrollbars in some browsers. */
+html { direction: ltr; }
+html, body { overflow-x: hidden; }
+
 body {
     margin: 0;
     font-family: "Cairo", "Tahoma", sans-serif;
@@ -67,7 +75,12 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus {
 
 /* ================== Content ================== */
 .container {
-    padding: 40px;
+        padding: 40px;
+}
+
+/* Reduce large padding on small screens to avoid horizontal overflow */
+@media (max-width: 640px) {
+    .container { padding: 12px; }
 }
 
 /* ================== Cards ================== */
