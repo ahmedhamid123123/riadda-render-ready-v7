@@ -23,82 +23,88 @@
     </style>
 </head>
 <body>
+<input type="checkbox" id="sidebar-toggle" class="sidebar-checkbox" aria-hidden="true">
 
     <a class="skip-link" href="#main-content">تخطي إلى المحتوى</a>
 
-<!-- ================= Navbar ================= -->
-<nav class="navbar" role="navigation" aria-label="Main navigation">
+{% if not request.resolver_match or request.resolver_match.url_name != 'login' %}
+<!-- Toggle button (fixed) -->
+<button id="sidebarToggle" class="sidebar-toggle" type="button" tabindex="0" aria-pressed="false" aria-label="فتح وإغلاق القائمة" aria-expanded="false">
+    <span class="hamburger" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+    </span>
+</button>
 
-    <!-- اسم النظام -->
-    <div class="logo" role="banner">
-        <strong>ريادة</strong>
-        <span>نظام الشحن</span>
+<!-- ================= Sidebar (side navigation) ================= -->
+<aside id="siteSidebar" class="sidebar" role="navigation" aria-label="القائمة الرئيسية">
+    <div class="sidebar-brand"><strong>ريادة</strong></div>
+
+    <!-- User at top (card) -->
+    <div class="sidebar-user sidebar-user-top">
+        {% if request.user.is_authenticated %}
+            <div class="user-card">
+                <div class="sidebar-username">
+                    {% if request.user.company %}
+                        <div class="company">{{ request.user.company.name_ar|default:request.user.company.name }}</div>
+                    {% endif %}
+                    <div class="username"><strong>اسم المستخدم:</strong> {{ request.user.username }}</div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
-    <!-- ================= Links ================= -->
-    <div class="links">
-
+    <div class="sidebar-links">
         {% if request.user.is_authenticated %}
-
-            <!-- ================= Super Admin ================= -->
             {% if request.user.role == 'ADMIN' and request.user.is_super_admin %}
-
                 <a href="{% url 'admin_dashboard' %}">لوحة التحكم</a>
                 <a href="{% url 'admin_admins' %}">إدارة المشرفين</a>
                 <a href="{% url 'agents_list' %}">إدارة الوكلاء</a>
                 <a href="{% url 'commissions_list' %}">العمولات</a>
                 <a href="{% url 'profit_dashboard' %}">الأرباح</a>
                 <a href="{% url 'admin_audit_logs' %}">سجل العمليات</a>
-
-            <!-- ================= Normal Admin ================= -->
             {% elif request.user.role == 'ADMIN' and request.user.permissions %}
-
                 <a href="{% url 'admin_dashboard' %}">لوحة التحكم</a>
-
                 {% if request.user.permissions.can_view_agents %}
                     <a href="{% url 'agents_list' %}">إدارة الوكلاء</a>
                 {% endif %}
-
                 {% if request.user.permissions.can_view_commissions %}
                     <a href="{% url 'commissions_list' %}">العمولات</a>
                 {% endif %}
-
                 {% if request.user.permissions.can_view_reports and request.user.permissions.can_view_profit and SHOW_PROFIT %}
                     <a href="{% url 'profit_dashboard' %}">الأرباح</a>
                 {% endif %}
-
                 {% if request.user.permissions.can_view_audit_logs %}
                     <a href="{% url 'admin_audit_logs' %}">سجل العمليات</a>
                 {% endif %}
-
             {% endif %}
 
-            <!-- ================= Agent ================= -->
             {% if request.user.role == 'AGENT' %}
                 <a href="{% url 'agent_dashboard' %}">لوحة الوكيل</a>
                 <a href="{% url 'agent_transactions' %}">عملياتي</a>
             {% endif %}
-
         {% endif %}
-    </div>
-
-    <!-- ================= User Area ================= -->
-    <div class="user-area">
+    
         {% if request.user.is_authenticated %}
-            <span class="username">
-                مرحبًا، {{ request.user.username }}
-            </span>
-            |
-            <a href="{% url 'logout' %}" class="logout">
-                تسجيل الخروج
-            </a>
+            <div class="sidebar-link-actions">
+                <a href="{% url 'logout' %}" class="sidebar-logout card-link">تسجيل الخروج</a>
+            </div>
         {% else %}
-            <a href="{% url 'login' %}">تسجيل الدخول</a>
+            <div class="sidebar-link-actions">
+                <a href="{% url 'login' %}" class="card-link sidebar-login">تسجيل الدخول</a>
+            </div>
         {% endif %}
+
     </div>
-</nav>
+    </aside>
+
+    <!-- Overlay used on small screens when sidebar is open -->
+    <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+{% endif %}
 
 <!-- ================= Content ================= -->
+<label for="sidebar-toggle" class="overlay" aria-hidden="true"></label>
 <main id="main-content" class="container" role="main">
 
     {% if messages %}
@@ -115,6 +121,29 @@
 </main>
 
 <!-- Footer landmark (if present in templates) -->
+
+<script src="{% static 'js/sidebar.js' %}"></script>
+
+<!-- Debug: reset sidebar state when visiting ?reset_sidebar=1 -->
+<script>
+(function(){
+    try{
+        var params = new URLSearchParams(window.location.search);
+        if(params.get('reset_sidebar') === '1'){
+            localStorage.removeItem('riadda.sidebarCollapsed');
+            console.log('sidebar: state cleared via ?reset_sidebar=1');
+            document.body.classList.remove('sidebar-collapsed','sidebar-open');
+            var t = document.getElementById('sidebarToggle');
+            if(t){ t.classList.remove('active'); t.setAttribute('aria-expanded','false'); t.setAttribute('aria-pressed','false'); }
+            var o = document.getElementById('sidebarOverlay');
+            if(o) o.classList.remove('visible');
+            var u = new URL(window.location.href);
+            u.searchParams.delete('reset_sidebar');
+            window.history.replaceState({}, document.title, u.toString());
+        }
+    }catch(e){ console.warn('sidebar: reset failed', e); }
+})();
+</script>
 
 </body>
 </html>

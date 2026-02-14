@@ -7,7 +7,6 @@ from rest_framework import status
 
 from apps.accounts.permissions import IsAgent
 from apps.sales.models import Transaction, RechargeDenomination
-from apps.billing.models import AgentBalance
 from apps.core.api.utils import api_response
 from apps.sales.api.serializers import SellResponseSerializer, SellInputSerializer
 

@@ -4,9 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.accounts.models import User
 from apps.core.api.utils import api_response
-from apps.core.api.messages import MESSAGES
 class AgentLoginAPIView(APIView):
     """
     Agent Login API (JWT)

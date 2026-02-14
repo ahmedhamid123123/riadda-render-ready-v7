@@ -2,9 +2,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from apps.accounts.permissions import IsAdminOrAgent
 
-from apps.accounts.api.views import LoginAPIView, LogoutAPIView
-from apps.accounts.api.admin_views import AdminAgentsListAPIView, ToggleAgentStatusAPIView
-from apps.accounts.api.reports_views import DailyReportAPIView, MonthlyReportAPIView, YearlyReportAPIView
 from apps.accounts.api.agent_views import AgentProfileAPIView
 from apps.accounts.api.agent_transactions import AgentTransactionsAPIView
 from apps.accounts.api.balance_views import AgentBalanceAPIView

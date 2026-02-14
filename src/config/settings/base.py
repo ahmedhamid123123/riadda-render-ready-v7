@@ -276,3 +276,15 @@ CONTENT_SECURITY_POLICY = {
 
 # If you REALLY must allow inline styles (not recommended), use:
 # CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+
+# During development, relax a few directives so local testing and external fonts work.
+if DEBUG:
+    # Allow Google Fonts and inline styles/scripts for easier local development and debugging.
+    CONTENT_SECURITY_POLICY.setdefault('DIRECTIVES', {})
+    directives = CONTENT_SECURITY_POLICY['DIRECTIVES']
+    # permit loading styles from Google Fonts and allow inline styles (only in DEBUG)
+    directives['style-src'] = ("'self'", "'unsafe-inline'", 'https://fonts.googleapis.com')
+    # permit loading font files from Google (fonts.gstatic) and data: URIs
+    directives['font-src'] = ("'self'", 'https://fonts.gstatic.com', 'data:')
+    # allow inline scripts in development (if you prefer, remove this and move inline scripts to static files)
+    directives['script-src'] = ("'self'", "'unsafe-inline'")

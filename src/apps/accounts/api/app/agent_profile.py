@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from apps.accounts.permissions import IsAgent
-from apps.accounts.models import User
 from apps.billing.models import AgentBalance
 from apps.core.api.utils import api_response
 from apps.core.api.messages import MESSAGES

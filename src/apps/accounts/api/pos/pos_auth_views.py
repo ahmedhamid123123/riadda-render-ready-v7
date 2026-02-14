@@ -5,7 +5,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.core.api.utils import api_response
-from apps.accounts.models import User
 
 
 class PosAgentLoginAPIView(APIView):

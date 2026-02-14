@@ -3,35 +3,36 @@
 ================================ */
 
 .login-wrapper {
-    min-height: calc(100vh - 80px);
+    min-height: 100vh; /* full viewport height to center vertically */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
+    justify-content: center; /* center horizontally */
+    align-items: center;     /* center vertically */
+    padding: 16px;
+    box-sizing: border-box;
 }
 
 /* ===== Card ===== */
 .login-card {
     width: 100%;
-    max-width: 310px;              /* 🔹 أصغر */
+    max-width: 420px;              /* a bit wider on desktop */
     background: #ffffff;
-    border-radius: 20px;
-    padding: 22px 20px;            /* 🔹 أخف */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+    border-radius: 16px;
+    padding: 26px 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     text-align: center;
 }
 
 /* ===== Titles ===== */
 .login-title {
-    margin-bottom: 4px;
-    font-size: 30px;
-    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 28px;
+    font-weight: 800;
 }
 
 .login-subtitle {
     margin-bottom: 18px;
-    font-size: 13px;
-    color: #777;
+    font-size: 14px;
+    color: #666;
 }
 
 /* ===== Form ===== */
@@ -49,11 +50,11 @@
 
 .form-group input {
     width: 100%;
-    padding: 9px 10px;             /* 🔹 أقل ارتفاع */
-    border-radius: 7px;
-    border: 1px solid #ddd;
-    font-size: 13px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.05s;
 }
 
 .form-group input:focus {
@@ -65,19 +66,20 @@
 /* ===== Button ===== */
 .login-btn {
     width: 100%;
-    margin-top: 8px;
-    padding: 10px;
+    margin-top: 12px;
+    padding: 12px;
     border: none;
-    border-radius: 7px;
-    background: #238cfd;
+    border-radius: 10px;
+    background: #2563eb;
     color: #fff;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.18);
 }
 
 .login-btn:hover {
-    background: #cfdeff;
+    background: #1d4ed8;
 }
 
 /* ===== Footer ===== */
@@ -94,30 +96,34 @@
 /* 🔽 شاشات قصيرة (POS / Landscape) */
 @media (max-height: 650px) {
     .login-wrapper {
-        align-items: flex-start;    /* 🔹 يصعد للأعلى */
-        padding-top: 30px;
+        align-items: flex-start;    /* move up on short screens */
+        padding-top: 28px;
     }
 }
 
 /* 🔽 شاشات أقصر */
 @media (max-height: 520px) {
     .login-card {
-        padding: 18px 16px;
+        padding: 16px 12px;
     }
 
     .login-title {
-        font-size: 17px;
+        font-size: 20px;
     }
 
     .login-subtitle {
         font-size: 12px;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
     }
 }
 
 /* 🔽 موبايل صغير جدًا */
 @media (max-width: 420px) {
     .login-card {
-        max-width:auto;              /* 🔹 كامل العرض */
+        max-width: 100%;              /* full width on tiny screens */
+        border-radius: 12px;
+        padding: 14px;
     }
+    .login-title { font-size: 20px; }
+    .form-group label, .form-group input { font-size: 14px; }
 }

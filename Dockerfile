@@ -27,4 +27,4 @@ ENV WEB_CONCURRENCY=3
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 # Ensure the application module path matches the project layout (uses `src` package)
-CMD ["sh", "-c", "gunicorn src.config.wsgi:application --bind 0.0.0.0:${PORT} --workers ${WEB_CONCURRENCY}"]
+CMD ["sh", "-c", "gunicorn config.wsgi:application --chdir src --bind 0.0.0.0:${PORT} --workers ${WEB_CONCURRENCY}"]

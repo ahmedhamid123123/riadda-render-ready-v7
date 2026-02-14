@@ -1,1 +1,1 @@
-web: gunicorn src.config.wsgi:application
+web: gunicorn config.wsgi:application --chdir src

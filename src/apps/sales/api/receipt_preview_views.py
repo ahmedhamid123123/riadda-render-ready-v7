@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from apps.core.api.utils import api_response
-from apps.accounts.permissions import IsAdmin, IsSuperAdmin, IsAgent
+from apps.accounts.permissions import IsAdmin, IsAgent
 from apps.sales.models import Transaction
 from apps.sales.services.receipt import verify_receipt_payload
 
