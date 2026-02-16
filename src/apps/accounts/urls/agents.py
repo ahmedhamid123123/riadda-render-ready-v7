@@ -25,6 +25,7 @@ agent_sell = getattr(_va, 'agent_sell', None)
 customer_recharge_view = getattr(_vcust, 'customer_recharge_view', None)
 customer_receipt_view = getattr(_va, 'customer_receipt_view', None)
 
+
 urlpatterns = [
     # AGENT
     path("agent/dashboard/", agent_dashboard, name="agent_dashboard"),
@@ -40,8 +41,7 @@ urlpatterns = [
 
     # Agent sell (web + fallback)
     # prefer the web-specific handler if present, otherwise use server-side `agent_sell`
-    path("agent/sell/", agent_sell_view or agent_sell, name="agent_sell"),
-
+    path("agent/sell/", agent_sell_view, name="agent_sell"),
     # CUSTOMER
     path("recharge/", customer_recharge_view, name="customer_recharge"),
     path("receipt/<uuid:token>/", customer_receipt_view, name="customer_receipt"),
