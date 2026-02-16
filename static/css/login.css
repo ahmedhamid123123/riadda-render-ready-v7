@@ -1,14 +1,26 @@
 /* ===============================
    Login Page (Compact + Responsive)
+   - improved RTL support
+   - fluid type sizing using clamp()
+   - better mobile tap targets / safe-area handling
 ================================ */
+
+html, body {
+    height: 100%;
+    background-color: #f3f6f9; /* unified page background */
+}
 
 .login-wrapper {
     min-height: 100vh; /* full viewport height to center vertically */
     display: flex;
     justify-content: center; /* center horizontally */
     align-items: center;     /* center vertically */
-    padding: 16px;
+    padding: 18px;
     box-sizing: border-box;
+    background: #f3f6f9; /* unified background color */
+    /* ensure RTL layout for Arabic content; won't override global dir if set */
+    direction: rtl;
+    padding-bottom: env(safe-area-inset-bottom, 18px);
 }
 
 /* ===== Card ===== */
@@ -18,20 +30,42 @@
     background: #ffffff;
     border-radius: 16px;
     padding: 26px 22px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 18px 50px rgba(16,24,40,0.08); /* stronger shadow */
+    border: 1px solid rgba(16,24,40,0.03);
     text-align: center;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 80px rgba(16,24,40,0.10);
+}
+
+/* ===== Brand / Logo ===== */
+.login-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.login-logo {
+    max-width: 160px;
+    width: 36%;
+    height: auto;
+    object-fit: contain;
 }
 
 /* ===== Titles ===== */
 .login-title {
     margin-bottom: 6px;
-    font-size: 28px;
+    font-size: clamp(20px, 3.6vw, 28px);
     font-weight: 800;
+    line-height: 1.05;
 }
 
 .login-subtitle {
     margin-bottom: 18px;
-    font-size: 14px;
+    font-size: clamp(12px, 2.2vw, 14px);
     color: #666;
 }
 
@@ -41,22 +75,25 @@
     margin-bottom: 14px;
 }
 
+.form-group {
+    text-align: right;
+    margin-bottom: 14px;
+}
 .form-group label {
     display: block;
-    font-size: 15px;
-    margin-bottom: 5px;
+    font-size: clamp(13px, 2.2vw, 15px);
+    margin-bottom: 6px;
     color: #0d0d0d;
 }
-
 .form-group input {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 12px 14px; /* larger tap target */
+    border-radius: 10px;
     border: 1px solid #e2e8f0;
-    font-size: 14px;
+    font-size: clamp(14px, 2.4vw, 16px);
     transition: border-color 0.15s, box-shadow 0.15s, transform 0.05s;
+    direction: rtl; /* make placeholder and text align naturally for Arabic */
 }
-
 .form-group input:focus {
     outline: none;
     border-color: #3b82f6;
@@ -67,15 +104,15 @@
 .login-btn {
     width: 100%;
     margin-top: 12px;
-    padding: 12px;
+    padding: 14px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     background: #2563eb;
     color: #fff;
-    font-size: 15px;
+    font-size: clamp(14px, 2.6vw, 16px);
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(37,99,235,0.18);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.16);
 }
 
 .login-btn:hover {
@@ -85,7 +122,7 @@
 /* ===== Footer ===== */
 .login-footer {
     margin-top: 14px;
-    font-size: 11px;
+    font-size: clamp(11px, 1.8vw, 12px);
     color: #999;
 }
 
@@ -94,10 +131,12 @@
 ================================ */
 
 /* 🔽 شاشات قصيرة (POS / Landscape) */
-@media (max-height: 650px) {
+/* keep the card centered vertically even on short/landscape screens
+   (remove vertical shift to top so the card stays in the middle) */
+@media (max-height: 420px) {
     .login-wrapper {
-        align-items: flex-start;    /* move up on short screens */
-        padding-top: 28px;
+        align-items: center;
+        padding-top: 12px;
     }
 }
 
@@ -108,7 +147,7 @@
     }
 
     .login-title {
-        font-size: 20px;
+        font-size: clamp(18px, 4vw, 22px);
     }
 
     .login-subtitle {
@@ -124,6 +163,11 @@
         border-radius: 12px;
         padding: 14px;
     }
-    .login-title { font-size: 20px; }
+    .login-title { font-size: clamp(18px, 6.8vw, 20px); }
     .form-group label, .form-group input { font-size: 14px; }
+}
+
+/* Large desktop: keep card comfortably sized */
+@media (min-width: 1400px) {
+    .login-card { max-width: 520px; }
 }

@@ -228,3 +228,44 @@ def agent_reprint_receipt(request, transaction_id):
     )
 
     return redirect('receipt-html', token=transaction.public_token)
+
+
+@login_required
+def agent_sell(request):
+    """Agent-facing sell page (same as web sell) to ensure route availability.
+
+    This duplicates the catalog-building logic used by the web view so the
+    non-web agent URL `/accounts/agent/sell/` is always available.
+    """
+    from apps.sales.models import TelecomCompany
+
+    companies = (
+        TelecomCompany.objects
+        .filter(is_active=True)
+        .prefetch_related('denominations')
+        .order_by('display_order', 'name_ar')
+    )
+
+    catalog = []
+    for company in companies:
+        denoms = []
+        for d in company.denominations.all():
+            if not d.is_active:
+                continue
+            denoms.append({
+                'id': d.id,
+                'value': d.value,
+                'price_to_agent': d.price_to_agent,
+            })
+
+        if not denoms:
+            continue
+
+        catalog.append({
+            'company_id': company.id,
+            'company_name': company.name_ar,
+            'logo': company.logo.url if company.logo else None,
+            'denominations': denoms,
+        })
+
+    return render(request, 'agent/sell.html', {'catalog': catalog})

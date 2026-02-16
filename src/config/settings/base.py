@@ -21,7 +21,16 @@ BASE_DIR = Path(__file__).resolve().parents[3]
 # Core Security
 # ---------------------
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
+# Determine DEBUG early. Prefer explicit env var, but if the settings module
+# in use is the development settings (e.g. config.settings.dev) treat as DEBUG
+# so that importing dev.py (which overrides values) does not trigger
+# production-only runtime checks during import.
+DJANGO_SETTINGS_MODULE = os.environ.get("DJANGO_SETTINGS_MODULE", "")
+DEBUG = (
+    os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
+    or DJANGO_SETTINGS_MODULE.endswith(".dev")
+    or ".dev" in DJANGO_SETTINGS_MODULE
+)
 
 if not SECRET_KEY:
     if DEBUG:
@@ -36,6 +45,11 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
+# If running on Render, include the external hostname provided by the platform
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME") or os.environ.get("RENDER_SERVICE_ID")
+if RENDER_EXTERNAL_HOSTNAME:
+    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 # HMAC key used to sign receipt snapshots (tamper-evident).
 RECEIPT_HMAC_KEY = os.environ.get("DJANGO_RECEIPT_HMAC_KEY")
 if not RECEIPT_HMAC_KEY:
@@ -185,6 +199,21 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Basic logging: render reads stdout/stderr — send logs to console
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        }
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG" if DEBUG else "INFO",
+    },
+}
 
 # ---------------------
 # Proxy / Render correctness
