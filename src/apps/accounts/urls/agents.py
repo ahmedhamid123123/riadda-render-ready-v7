@@ -16,6 +16,10 @@ agent_dashboard_view = getattr(_vaw, 'agent_dashboard_view', None)
 agent_transactions_view = getattr(_vaw, 'agent_transactions_view', None)
 agent_confirm_transaction = getattr(_vaw, 'agent_confirm_transaction', None)
 agent_reprint_transaction = getattr(_vaw, 'agent_reprint_transaction', None)
+agent_sell_view = getattr(_vaw, 'agent_sell_view', None)
+
+# Also expose the non-web (server-rendered) sell view from views_agent
+agent_sell = getattr(_va, 'agent_sell', None)
 
 # CUSTOMER
 customer_recharge_view = getattr(_vcust, 'customer_recharge_view', None)
@@ -33,6 +37,10 @@ urlpatterns = [
     path("agent/web/transactions/", agent_transactions_view, name="agent_web_transactions"),
     path("agent/web/transactions/<int:transaction_id>/confirm/", agent_confirm_transaction, name="agent_web_confirm"),
     path("agent/web/transactions/<int:transaction_id>/reprint/", agent_reprint_transaction, name="agent_web_reprint"),
+
+    # Agent sell (web + fallback)
+    # prefer the web-specific handler if present, otherwise use server-side `agent_sell`
+    path("agent/sell/", agent_sell_view or agent_sell, name="agent_sell"),
 
     # CUSTOMER
     path("recharge/", customer_recharge_view, name="customer_recharge"),

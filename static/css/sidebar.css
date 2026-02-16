@@ -1,0 +1,224 @@
+/* ================== Sidebar (RTL – right) ==================
+   Design goals:
+   - RTL from the RIGHT (explicit + logical)
+   - One toggle mechanism: body.sidebar-open / body.sidebar-collapsed
+   - Mobile slide-in + overlay
+*/
+
+/* Base */
+.sidebar {
+  position: fixed;
+  top: 0;
+
+  /* ✅ تثبيت صريح على اليمين في RTL (حل قاطع للتعارضات) */
+  right: 0 !important;
+  left: auto !important;
+
+  /* ✅ خصائص منطقية صحيحة للـ RTL */
+  inset-inline-start: 0;     /* start = right في RTL */
+  inset-inline-end: auto;
+
+  height: 100vh;    /* fallback */
+  height: 100dvh;   /* modern browsers */
+  width: 240px;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: -12px 0 24px rgba(0,0,0,.15);
+
+  transform: translateX(0);
+  transform-origin: inline-start center; /* start = right في RTL */
+  transition: transform .25s ease;
+
+  z-index: 1200;
+
+  /* مساحة علوية حتى لا يتداخل المحتوى مع أيقونة الفتح */
+  padding: 72px 10px 16px;
+
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Desktop: collapsed state (ينسحب خارج الشاشة من جهة اليمين) */
+body.sidebar-collapsed .sidebar {
+  transform: translateX(100%);
+}
+
+/* Toggle button (icon) */
+.sidebar-toggle {
+  position: fixed;
+  top: 12px;
+
+  /* زر التحكم يكون أيضًا على اليمين */
+  right: 12px;
+  left: auto;
+
+  inset-inline-start: 12px; /* start = right في RTL */
+  z-index: 1300;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: none;
+
+  background: #0f172a;   /* داكن لتمييز الأيقونة */
+  color: #fff;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  transition: background .15s ease, transform .12s ease, box-shadow .12s ease;
+}
+.sidebar-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+}
+body.sidebar-open .sidebar-toggle { background: #ef4444; }
+
+/* شكل أيقونة الهامبرغر */
+.sidebar-toggle .hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  margin: 4px 0;
+  border-radius: 2px;
+}
+
+/* Overlay (mobile focus trap) */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility .2s ease;
+}
+body.sidebar-open .sidebar-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile behavior */
+@media (max-width: 991px) {
+  .sidebar {
+    top: 56px; /* عدّل الارتفاع إذا تغيّر ارتفاع النافبار */
+    height: calc(100dvh - 56px);
+    width: min(86vw, 320px);
+
+    /* مخفي افتراضيًا خارج الشاشة من جهة اليمين */
+    transform: translateX(100%);
+  }
+
+  body.sidebar-open .sidebar {
+    transform: translateX(0) !important;
+  }
+}
+
+/* Desktop content offset (إزاحة المحتوى من جهة اليمين) */
+@media (min-width: 992px) {
+  body:not(.sidebar-collapsed) .main-content,
+  body:not(.sidebar-collapsed) main.container {
+    margin-inline-start: 240px; /* start = right في RTL */
+  }
+}
+
+/* ===== Internal layout ===== */
+.sidebar .sidebar-user .user-card {
+  background: #87CEEB;
+  color: #021822;
+  padding: 14px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 6px 18px rgba(3,37,65,0.06);
+  margin-bottom: 12px;
+  text-align: center;
+}
+.sidebar .sidebar-username { font-weight: 800; font-size: 16px; }
+.sidebar .company { font-size: 12px; opacity: .9; }
+
+.sidebar .sidebar-links {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding-block: 6px;
+}
+.sidebar .sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  background: #87CEEB;
+  color: #000;
+  padding: 12px 14px;
+  margin: 8px 0;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(3,37,65,0.06);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.sidebar .sidebar-links a:hover,
+.sidebar .sidebar-links a:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(3,37,65,0.12);
+  background: #7dcaf4;
+}
+.sidebar .sidebar-links a .link-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.2);
+  color: #000;
+}
+
+/* Active link */
+.sidebar a.active {
+  background: linear-gradient(180deg, rgba(34,197,94,.25), rgba(34,197,94,.12));
+  border: 1px solid rgba(34,197,94,.5);
+  color: #064e3b;
+}
+
+/* Actions at bottom (Logout card) */
+.sidebar .sidebar-link-actions {
+  margin-top: auto;   /* يدفع الكارت إلى أسفل السايدبار */
+  padding-top: 12px;
+  border-top: 1px dashed #e6eef6;
+}
+.sidebar .sidebar-logout {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  padding: 16px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  margin: 10px 0;
+  box-shadow: 0 10px 26px rgba(220,38,38,.35);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.sidebar .sidebar-logout:hover,
+.sidebar .sidebar-logout:focus {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(204,47,47,.45);
+}
+
+/* Accessibility */
+.sidebar a:focus, .sidebar button:focus {
+  outline: 3px solid rgba(37, 99, 235, .35);
+  outline-offset: 2px;
+}
+
+/* Small screens polish */
+@media (max-width: 640px) {
+  .sidebar .sidebar-username { font-size: 14px; }
+  .sidebar .company { font-size: 11px; }
+}

@@ -1,0 +1,109 @@
+/* ================== Responsive Utilities ================== */
+/* Mobile-first, RTL-safe */
+
+:root{
+  --container-pad-desktop: 40px;
+  --container-pad-tablet: 20px;
+  --container-pad-mobile: 12px;
+  --gutter: 8px;
+}
+
+/* Containers */
+.container{ padding-inline: var(--container-pad-desktop); }
+@media (max-width: 991px){ .container{ padding-inline: var(--container-pad-tablet); } }
+@media (max-width: 640px){ .container{ padding-inline: var(--container-pad-mobile); } }
+
+/* Fluid media */
+.img-fluid{ max-width:100%; height:auto; display:block; }
+
+/* Display helpers */
+.d-block{ display:block; }
+.d-inline{ display:inline; }
+.d-none{ display:none; }
+
+@media (min-width: 640px){ .d-sm-none{ display:none; } .d-sm-block{ display:block; } }
+@media (min-width: 768px){ .d-md-none{ display:none; } .d-md-block{ display:block; } }
+@media (min-width: 992px){ .d-lg-none{ display:none; } .d-lg-block{ display:block; } }
+
+/* Typography */
+.text-sm{ font-size:14px; }
+@media (min-width: 992px){ .text-sm{ font-size:15px; } }
+
+/* Grid helpers */
+.row{ display:flex; flex-wrap:wrap; margin-inline: calc(var(--gutter) * -1); }
+.col{ padding-inline: var(--gutter); width:100%; }
+@media (min-width: 640px){ .col-sm-6{ width:50%; } .col-sm-4{ width:33.3333%; } }
+@media (min-width: 992px){ .col-lg-4{ width:33.3333%; } .col-lg-3{ width:25%; } }
+
+/* Spacing */
+.mt-sm-0{ margin-top:0; }
+.mb-sm-0{ margin-bottom:0; }
+
+/* RTL helpers */
+.m-is-2{ margin-inline-start:8px; }
+.m-ie-2{ margin-inline-end:8px; }
+.p-is-2{ padding-inline-start:8px; }
+.p-ie-2{ padding-inline-end:8px; }
+
+/* Panels slide */
+.panel-slide-in{ transform-origin: inline-end center; }
+
+/* Navbar small screens */
+@media (max-width: 480px){
+  .navbar .links{ display:none; }
+  .navbar .logo{ text-align:center; margin-inline:auto; }
+}
+
+/* ================== POS – Mobile ================== */
+@media (max-width: 768px){
+  .pos-btn{
+    display:block; width:100%;
+    padding:16px 14px; font-size:18px;
+    border-radius:10px; margin:8px 0;
+  }
+
+  .pos-grid{ display:grid; grid-template-columns:1fr; gap:10px; }
+
+  .pos-action-bar{
+    position:fixed;
+    inset-inline-start:0; inset-inline-end:0; bottom:0;
+    background:#fff; padding:10px 12px;
+    box-shadow:0 -4px 16px rgba(0,0,0,0.08);
+    z-index:1400; display:flex; gap:8px;
+  }
+
+  body{ padding-bottom:72px; }
+
+  .table-responsive{ overflow:auto; -webkit-overflow-scrolling:touch; }
+
+  .input-touch{ padding:12px 10px; font-size:16px; }
+
+  .hide-on-mobile{ display:none !important; }
+
+  .pos-action-bar .action-left{ margin-inline-start:auto; }
+}
+
+/* ================== POS – Desktop ================== */
+@media (min-width: 992px){
+  .main-wrapper{ max-width:1200px; margin-inline:auto; }
+
+  .pos-grid{ grid-template-columns:1fr 360px; gap:18px; }
+
+  .pos-btn{ display:inline-block; padding:10px 12px; font-size:15px; width:auto; }
+
+  .pos-action-bar{ position:sticky; top:80px; background:transparent; box-shadow:none; padding:0; }
+
+  .table-responsive{ overflow:visible; }
+
+  .show-on-desktop{ display:block !important; }
+  .hide-on-desktop{ display:none !important; }
+
+  .card{ padding:18px; }
+
+  .navbar .links{ display:block; }
+
+  .form-inline{ display:flex; gap:10px; align-items:center; }
+
+    /* Sidebar offset handled by `static/css/sidebar.css` using
+      logical margin-inline-start when sidebar is open/collapsed. */
+}

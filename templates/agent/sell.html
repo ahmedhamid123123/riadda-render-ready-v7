@@ -8,8 +8,18 @@
 
 <h2 class="page-title">بيع رصيد</h2>
 
-<!-- ================= Catalog Grid ================= -->
-<div class="catalog-grid">
+<!-- ================= Telecom Companies Card ================= -->
+<div class="card telecom-card">
+    <h3 class="card-title">شركات الاتصالات</h3>
+
+    <!-- ================= Catalog Grid ================= -->
+    {% if not catalog %}
+        <div class="card">
+            <p>لا توجد شركات أو فئات مفعّلة حالياً. الرجاء إضافة شركات وفئات من لوحة الإدارة.</p>
+        </div>
+    {% endif %}
+
+    <div class="catalog-grid">
 
     {% for company in catalog %}
     <div class="card company-card">
@@ -29,7 +39,7 @@
 
             {% for d in company.denominations %}
             <form method="post"
-                  action="{% url 'agent-sell' %}"
+                action="{% url 'agent_sell' %}"
                   class="denom-form"
                   onsubmit="return confirm('تأكيد بيع فئة {{ d.value }} د.ع؟');">
 
@@ -54,11 +64,12 @@
         <p>لا توجد شركات متاحة حاليًا</p>
     {% endfor %}
 
+    </div>
 </div>
 
 <!-- ================= Actions ================= -->
 <div class="card actions-card">
-    <a href="{% url 'agent-dashboard' %}" class="btn secondary">
+    <a href="{% url 'agent_dashboard' %}" class="btn secondary">
         ⬅ الرجوع للوحة الوكيل
     </a>
 </div>

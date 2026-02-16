@@ -32,7 +32,7 @@ class AdminPermissionMiddleware:
             # =========================
             if user.role == 'AGENT':
                 messages.error(request, 'غير مسموح لك بالدخول إلى لوحة الإدارة')
-                return redirect(reverse('agent-dashboard'))
+                return redirect(reverse('agent_dashboard'))
 
             # =========================
             # Super Admin ✅ (يمر دائمًا)
@@ -66,4 +66,4 @@ class AdminPermissionMiddleware:
 
     def _deny(self, request):
         messages.error(request, 'ليس لديك صلاحية للوصول إلى هذه الصفحة')
-        return redirect(reverse('admin-dashboard'))
+        return redirect(reverse('admin_dashboard'))

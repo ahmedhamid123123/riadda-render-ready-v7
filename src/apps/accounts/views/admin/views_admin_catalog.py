@@ -6,6 +6,7 @@ from apps.accounts.permissions import is_admin
 from apps.sales.models import TelecomCompany, RechargeDenomination
 from django.conf import settings
 from apps.core.utils.uploads import validate_uploaded_image
+from apps.accounts.permissions import has_perm
 
 
 # =========================
@@ -94,6 +95,13 @@ def admin_denominations_list(request):
 def admin_denomination_create(request):
     companies = TelecomCompany.objects.filter(is_active=True)
 
+    # only admins with permission can edit/create denomination prices
+    if not has_perm(request.user, 'can_edit_commissions'):
+        # Super admin bypasses has_perm inside helper
+        # If the admin lacks permission, deny access
+        messages.error(request, 'لا تملك صلاحية إضافة أو تعديل أسعار الفئات')
+        return redirect('admin-denominations')
+
     if request.method == "POST":
         RechargeDenomination.objects.create(
             company_id=request.POST.get("company_id"),
@@ -116,6 +124,10 @@ def admin_denomination_create(request):
 def admin_denomination_edit(request, denom_id):
     denom = get_object_or_404(RechargeDenomination, id=denom_id)
     companies = TelecomCompany.objects.filter(is_active=True)
+
+    if not has_perm(request.user, 'can_edit_commissions'):
+        messages.error(request, 'لا تملك صلاحية إضافة أو تعديل أسعار الفئات')
+        return redirect('admin-denominations')
 
     if request.method == "POST":
         denom.company_id = request.POST.get("company_id")

@@ -20,6 +20,7 @@
     {% if request.user.is_authenticated and request.user.role == 'AGENT' %}
     <div class="navbar-links">
         <a href="{% url 'agent_dashboard' %}">لوحة الوكيل</a>
+        <a href="{% url 'agent_sell' %}">بيع رصيد</a>
         <a href="{% url 'agent_transactions' %}">عملياتي</a>
     </div>
     {% endif %}
