@@ -1,47 +1,35 @@
-{% extends "base/base.html" %}
-{% load static %}
-
-{% block title %}500 - خطأ في الخادم{% endblock %}
-
-{% block content %}
-<style>
-    .error-wrapper {
-        max-width: 700px;
-        margin: 100px auto;
-        text-align: center;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-    }
-    .error-wrapper h1 {
-        font-size: 34px;
-        margin-bottom: 16px;
-    }
-    .error-wrapper p {
-        color: #666;
-        line-height: 1.8;
-        font-size: 16px;
-    }
-    .error-wrapper a {
-        display: inline-block;
-        margin-top: 24px;
-        padding: 10px 20px;
-        background: #2563eb;
-        color: #fff;
-        border-radius: 6px;
-        text-decoration: none;
-    }
-    .error-wrapper a:hover {
-        background: #1d4ed8;
-    }
-</style>
-
-<div class="error-wrapper">
-    <img src="{% static 'images/server-error.svg' %}" alt="Server Error" style="max-width: 200px; margin-bottom: 24px;">
-    <h1>حدث خطأ داخلي في النظام</h1>
-    <p>
-        حصل خلل غير متوقع أثناء تنفيذ العملية.
-        يرجى المحاولة لاحقًا.  
-        في حال تكرر الخطأ، يرجى إبلاغ فريق الدعم.
-    </p>
-    <a href="/">العودة إلى الصفحة الرئيسية</a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>{{ title|default:"خطأ داخلي" }}</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: #020617;
+            border-radius: 12px;
+            padding: 32px 28px;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,.4);
+        }
+        h1 { margin-bottom: 12px; font-size: 22px; }
+        p { opacity: .85; line-height: 1.7; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>{{ title }}</h1>
+        <p>{{ default_message }}</p>
+    </div>
+</body>
+</html>
