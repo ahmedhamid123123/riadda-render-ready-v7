@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
 from django.http import HttpResponse
-import base64
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -14,16 +13,10 @@ from apps.sales.api.views_receipt import receipt_html_view
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Serve a tiny embedded favicon to satisfy browser requests without
-    # invoking template rendering or context processors.
-    def _favicon(request):
-        # 1x1 transparent PNG
-        data = base64.b64decode(
-            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
-        )
-        return HttpResponse(data, content_type="image/png")
-
-    path("favicon.ico", _favicon),
+    # Return empty response for favicon requests to avoid rendering templates
+    # (prevents errors when an authenticated-but-inactive user triggers context
+    # processors during a /favicon.ico request).
+    path("favicon.ico", lambda request: HttpResponse(status=204)),
 
     # Home -> admin dashboard
     path("", lambda request: redirect("/accounts/admin/dashboard/")),
