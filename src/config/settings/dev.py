@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False  # Set to False to test error pages in development
 
 ALLOWED_HOSTS = ["*"]
 
