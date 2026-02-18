@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
+from django.http import HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -11,6 +12,11 @@ from apps.sales.api.views_receipt import receipt_html_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    # Return empty response for favicon requests to avoid rendering templates
+    # (prevents errors when an authenticated-but-inactive user triggers context
+    # processors during a /favicon.ico request).
+    path("favicon.ico", lambda request: HttpResponse(status=204)),
 
     # Home -> admin dashboard
     path("", lambda request: redirect("/accounts/admin/dashboard/")),
