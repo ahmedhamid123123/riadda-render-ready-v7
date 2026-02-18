@@ -262,6 +262,44 @@ def add_admin(request):
 
 @login_required
 @user_passes_test(is_super_admin)
+@require_POST
+def toggle_admin_status(request, admin_id):
+    """Activate / deactivate an admin account. Super-admins cannot be
+    deactivated via this action and users cannot toggle their own account.
+    """
+    admin_obj = get_object_or_404(User, id=admin_id)
+
+    # Ensure target is an ADMIN
+    if admin_obj.role != User.Role.ADMIN:
+        from django.http import Http404
+        raise Http404("المستخدم المطلوب ليس من نوع مشرف")
+
+    # Prevent changing own status
+    if admin_obj == request.user:
+        messages.error(request, "لا يمكنك تغيير حالة حسابك بنفسك")
+        return redirect("admin_admin_detail", admin_id=admin_obj.id)
+
+    # Prevent disabling a Super Admin
+    if admin_obj.is_super_admin:
+        messages.error(request, "لا يمكن تعطيل سوبر أدمن")
+        return redirect("admin_admin_detail", admin_id=admin_obj.id)
+
+    admin_obj.is_active = not admin_obj.is_active
+    admin_obj.save(update_fields=["is_active"])
+
+    AuditLog.objects.create(
+        actor=request.user,
+        action="DISABLE_ADMIN" if not admin_obj.is_active else "ADD_ADMIN",
+        target_user=admin_obj,
+        message=f"{'تعطيل' if not admin_obj.is_active else 'تفعيل'} المشرف: {admin_obj.username}",
+    )
+
+    messages.success(request, "تم تحديث حالة المشرف")
+    return redirect("admin_admin_detail", admin_id=admin_obj.id)
+
+
+@login_required
+@user_passes_test(is_super_admin)
 def admin_detail(request, admin_id):
     admin_obj = get_object_or_404(User, id=admin_id)
     if admin_obj.role != User.Role.ADMIN:
